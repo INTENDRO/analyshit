@@ -31,6 +31,10 @@ avg_count_style = {
 	'fontSize': '24px'
 }
 
+weekday_style = {
+	'fontSize': '24px',
+}
+
 app.layout = html.Div([
 	html.H1(
 		children='Analyshit',
@@ -48,7 +52,43 @@ app.layout = html.Div([
 		html.Label("Neocolor Count:", style=avg_count_style),
 		html.Label("Geiss Count:", style=avg_count_style),
 	],
-	style={'columnCount':2,'backgroundColor':'#eeeeee'}
+	style={'columnCount':2, 'backgroundColor':'#eeeeee'}
+	),
+
+	html.Div([
+		html.Div([
+			html.Label("Monday", style=weekday_style),
+			html.Label("Tuesday", style=weekday_style),
+			html.Label("Wednesday", style=weekday_style),
+		],
+		style={'columnCount':'1' ,'backgroundColor':'#dddddd', 'width': '50%', 'float':'left'}
+		),
+		html.Div([
+			dcc.Graph(
+				id='calendar-heatmap',
+				figure=dict(
+					data=[
+						dict(
+							x=[1,2,3,4,5],
+							y=[4,2,3,4,2],
+							name='Test Graph'
+						),
+						dict(
+							x=[1,2,3,4,5],
+							y=[5,3,5,1,3],
+							name='lksjdf'
+						),
+					],
+					layout=dict(
+						title='Calendar Heatmap'
+					)
+				)
+			)
+		],
+		style={'backgroundColor':'#bbbbbb', 'width': '50%', 'float':'right', 'height': '100%'}
+		)
+	],
+	style={'columnCount':1, 'backgroundColor':'#111111'}
 	)
 ])
 
