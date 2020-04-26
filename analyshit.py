@@ -26,24 +26,29 @@ external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-app.layout = html.Div(children=[
-	html.H1(children='Hello Dash'),
+avg_count_style = {
+	'textAlign': 'center',
+	'fontSize': '24px'
+}
 
-	html.Div(children='''
-		Dash: A web application framework for Python.
-	'''),
-
-	dcc.Graph(
-		id='example-graph',
-		figure={
-			'data': [
-				{'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
-				{'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
-			],
-			'layout': {
-				'title': 'Mario Data Visualization'
-			}
+app.layout = html.Div([
+	html.H1(
+		children='Analyshit',
+		style={
+			'textAlign': 'center',
+			'fontSize': '64px'
 		}
+	),
+
+	html.Div([
+		html.Label("Avg. Consistency:", style=avg_count_style),
+		html.Label("Avg. Size:", style=avg_count_style),
+		html.Label("Glück Count:", style=avg_count_style),
+		html.Label("Ninja Count:", style=avg_count_style),
+		html.Label("Neocolor Count:", style=avg_count_style),
+		html.Label("Geiss Count:", style=avg_count_style),
+	],
+	style={'columnCount':2,'backgroundColor':'#eeeeee'}
 	)
 ])
 
@@ -83,7 +88,9 @@ def main():
 		filename = get_newest_filename()
 		print(filename)
 
-	app.run_server(debug=True)
+
+	print("\n\n")
+	app.run_server(debug=True, host="0.0.0.0")
 
 
 
