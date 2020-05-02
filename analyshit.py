@@ -23,8 +23,10 @@ import datetime
 
 # Dash
 import dash
+import dash_daq as daq
 import dash_core_components as dcc
 import dash_html_components as html
+
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -55,6 +57,7 @@ def display_dash(processed_data):
 			html.Label("Ninja Count: {}".format(processed_data["type_counter"]["ninja"]), style=avg_count_style),
 			html.Label("Neocolor Count: {}".format(processed_data["type_counter"]["neocolor"]), style=avg_count_style),
 			html.Label("Geiss Count: {}".format(processed_data["type_counter"]["geiss"]), style=avg_count_style),
+			html.Label("Bier Count: {}".format(processed_data["type_counter"]["bier"]), style=avg_count_style), 
 		],
 		style={'columnCount':2, 'backgroundColor':'#eeeeee'}
 		),
@@ -93,6 +96,30 @@ def display_dash(processed_data):
 			)
 		],
 		style={'columnCount':1, 'backgroundColor':'#111111'}
+		),
+
+		html.Div([
+			daq.Gauge(
+				id='consistency-auge',
+				label='Average Consistency',
+				min=0, # for some reason no tick labels if minimum is not 0
+				max=3,
+				showCurrentValue=True,
+				scale={'interval':1, 'labelInterval':1, 'custom':{0:{'label':'d'}, 1:{'label':'w'}, 2:{'label':'n'}, 3:{'label':'h'}}},
+				# value=processed_data["average_consistency"]
+				value = 2
+			),
+			daq.Gauge(
+				id='consistency-gauge',
+				showCurrentValue=True,
+				units="MPH",
+				value=5,
+				label='Average Consistency',
+				max=10,
+				min=1,
+			)  
+		],
+		style={'backgroundColor':'#ffffff'}
 		)
 	])
 
