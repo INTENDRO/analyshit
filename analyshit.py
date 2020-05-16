@@ -100,23 +100,22 @@ def display_dash(processed_data):
 
 		html.Div([
 			daq.Gauge(
-				id='consistency-auge',
+				id='consistency-gauge',
 				label='Average Consistency',
-				min=0, # for some reason no tick labels if minimum is not 0
-				max=3,
+				min=1,
+				max=4,
 				showCurrentValue=True,
-				scale={'interval':1, 'labelInterval':1, 'custom':{0:{'label':'d'}, 1:{'label':'w'}, 2:{'label':'n'}, 3:{'label':'h'}}},
-				# value=processed_data["average_consistency"]
-				value = 2
+				scale={'custom':{1:{'label':'d'}, 2:{'label':'w'}, 3:{'label':'n'}, 4:{'label':'h'}}},
+				value=processed_data["average_consistency"]
 			),
 			daq.Gauge(
-				id='consistency-gauge',
-				showCurrentValue=True,
-				units="MPH",
-				value=5,
-				label='Average Consistency',
-				max=10,
+				id='size-gauge',
+				label='Average Size',
 				min=1,
+				max=3,
+				showCurrentValue=True,
+				scale={'custom':{1:{'label':'w'}, 2:{'label':'n'}, 3:{'label':'g'}}},
+				value=processed_data["average_size"],
 			)  
 		],
 		style={'backgroundColor':'#ffffff'}
