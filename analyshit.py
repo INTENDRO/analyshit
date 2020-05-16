@@ -118,7 +118,34 @@ def display_dash(processed_data):
 				value=processed_data["average_size"],
 			)  
 		],
-		style={'backgroundColor':'#ffffff'}
+		style={'columnCount':2, 'backgroundColor':'#ffffff'}
+		),
+
+		html.Div([
+			dcc.Graph(
+				id='weekday-count-bar',
+				figure={
+					'data': [
+						{
+							# 'x': [1,2,3,4,5,6,7], 
+							'y': [processed_data["weekday_counter"]["Mon"],
+								processed_data["weekday_counter"]["Tue"],
+								processed_data["weekday_counter"]["Wed"],
+								processed_data["weekday_counter"]["Thu"],
+								processed_data["weekday_counter"]["Fri"],
+								processed_data["weekday_counter"]["Sat"],
+								processed_data["weekday_counter"]["Sun"]
+								], 
+							'type': 'bar'
+						}
+					],
+					'layout': {
+						'title': 'Weekday Count'
+					}
+				}
+			)
+		],
+		style={'backgroundColor':'#eeeeee'}
 		)
 	])
 
