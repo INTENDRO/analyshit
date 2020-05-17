@@ -28,6 +28,16 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 
+class OrderedCounter(collections.Counter, collections.OrderedDict):
+	'Counter that remembers the order elements are first encountered'
+
+	def __repr__(self):
+		return '%s(%r)' % (self.__class__.__name__, collections.OrderedDict(self))
+
+	def __reduce__(self):
+		return self.__class__, (collections.OrderedDict(self),)
+
+
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
@@ -57,7 +67,10 @@ def display_dash(processed_data):
 					"consistency_counter: {}".format(processed_data['consistency_counter']),
 					"size_counter: {}".format(processed_data['size_counter']),
 					"type_counter: {}".format(processed_data['type_counter']),
-					"date_counter: {}".format(processed_data['date_counter'])
+					"date_counter: {}".format(processed_data['date_counter']),
+					"keys: {}".format(processed_data['weekday_counter'].keys()),
+					"values: {}".format(processed_data['weekday_counter'].values()),
+					"items: {}".format(processed_data['weekday_counter'].items())
 				]),
 				cols= 100,
 				rows=80
@@ -141,15 +154,7 @@ def display_dash(processed_data):
 				figure={
 					'data': [
 						{
-							# 'x': [1,2,3,4,5,6,7], 
-							'y': [processed_data["weekday_counter"]["Mon"],
-								processed_data["weekday_counter"]["Tue"],
-								processed_data["weekday_counter"]["Wed"],
-								processed_data["weekday_counter"]["Thu"],
-								processed_data["weekday_counter"]["Fri"],
-								processed_data["weekday_counter"]["Sat"],
-								processed_data["weekday_counter"]["Sun"]
-								], 
+							'y': list(processed_data['weekday_counter'].values()),
 							'type': 'bar'
 						},
 					],
@@ -158,7 +163,7 @@ def display_dash(processed_data):
 						'xaxis': {
 							'title': 'Weekday',
 							'tickvals': [0,1,2,3,4,5,6],
-							'ticktext': ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+							'ticktext': list(processed_data['weekday_counter'].keys())
 						}
 					}
 				}
@@ -214,7 +219,7 @@ def process_file(filepath):
 
 
 	# counts
-	date_counter = collections.Counter()
+	date_counter = OrderedCounter()
 	weekday_counter = collections.Counter()
 	consistency_counter = collections.Counter()
 	size_counter = collections.Counter()
@@ -226,6 +231,9 @@ def process_file(filepath):
 		consistency_counter.update(entry["consistency"])
 		size_counter.update(entry["size"])
 		type_counter.update([entry["type"]])
+
+	# convert the weekday counter to an ordered counter using the conventional order of weekdays starting on monday
+	weekday_counter = OrderedCounter({k:weekday_counter[k] for k in ('Mon','Tue','Wed','Thu','Fri','Sat','Sun')})
 
 	logging.debug("weekday_counter: {}".format(weekday_counter))
 	logging.debug("consistency_counter: {}".format(consistency_counter))
