@@ -49,6 +49,20 @@ def display_dash(processed_data):
 				'fontSize': '64px'
 			}
 		),
+		html.Div(
+			html.Textarea("\n".join([
+					"average_consistency: {}".format(processed_data['average_consistency']),
+					"average_size: {}".format(processed_data['average_size']),
+					"weekday_counter: {}".format(processed_data['weekday_counter']),
+					"consistency_counter: {}".format(processed_data['consistency_counter']),
+					"size_counter: {}".format(processed_data['size_counter']),
+					"type_counter: {}".format(processed_data['type_counter']),
+					"date_counter: {}".format(processed_data['date_counter'])
+				]),
+				cols= 100,
+				rows=80
+			)
+		),
 
 		html.Div([
 			html.Label("Avg. Consistency: {:.3f}".format(processed_data["average_consistency"]), style=avg_count_style),
@@ -217,6 +231,7 @@ def process_file(filepath):
 	logging.debug("consistency_counter: {}".format(consistency_counter))
 	logging.debug("size_counter: {}".format(size_counter))
 	logging.debug("type_counter: {}".format(type_counter))
+	logging.debug("date_counter: {}".format(date_counter))
 
 
 	processed_data["type_counter"] = type_counter
@@ -273,6 +288,7 @@ def main():
 	logging.debug("file exists!")
 
 	processed_data = process_file(filepath)
+	logging.debug("Keys of processed_data dict: {}".format(processed_data.keys()))
 
 
 	print("\n\n")
