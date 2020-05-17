@@ -137,10 +137,15 @@ def display_dash(processed_data):
 								processed_data["weekday_counter"]["Sun"]
 								], 
 							'type': 'bar'
-						}
+						},
 					],
 					'layout': {
-						'title': 'Weekday Count'
+						'title': 'Amount of Individual Sittings per Weekday',
+						'xaxis': {
+							'title': 'Weekday',
+							'tickvals': [0,1,2,3,4,5,6],
+							'ticktext': ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+						}
 					}
 				}
 			)
@@ -252,12 +257,6 @@ def main():
 	logging.debug("data_dir: {}".format(data_dir))
 
 	if args.file:
-		# if not check_file_exists(args.file):
-		# 	logging.critical("Leaving the application...")
-		# 	sys.exit(-1)
-		# else:
-		# 	filename = args.file
-		# 	logging.debug("file {} exists!".format(filename))
 		filename = args.file
 		logging.debug("selected file: {}".format(filename))
 
