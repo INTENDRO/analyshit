@@ -41,6 +41,24 @@ class OrderedCounter(collections.Counter, collections.OrderedDict):
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
+
+
+# this does not work yet as the various lists are not independent!!! 
+def create_heatmap_matrix(dataset):
+	heatmap_matrix = [[0]*31]*12
+
+	for (date,count) in dataset.items():
+		date = datetime.date(2000 + int(date[0:2]),int(date[2:4]),int(date[4:6]))
+		# date.month contains the needed month index [1-12]
+		# date.day contains the needed day index [1-(however long the month is)]
+
+		heatmap_matrix[date.month-1][date.day-1] = count
+
+	logging.debug(heatmap_matrix)
+
+	return heatmap_matrix
+
+
 def display_dash(processed_data):
 	avg_count_style = {
 		'textAlign': 'center',
@@ -103,11 +121,9 @@ def display_dash(processed_data):
 					figure=dict(
 						data=[
 							dict(
-								z=[
-									[1,2,3],
-									[3,2,1],
-									[2,2,2]
-								],
+								x=list(range(1,32)),
+								y=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+								z=create_heatmap_matrix(processed_data['date_counter']),
 								colorscale='Reds',
 								name='lksjdf',
 								type='heatmap'
