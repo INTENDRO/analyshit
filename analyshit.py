@@ -43,9 +43,23 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 
 
-# this does not work yet as the various lists are not independent!!! 
 def create_heatmap_matrix(dataset):
-	heatmap_matrix = [[0]*31]*12
+	"""
+	Why not [[0]*31]*12 ?
+	The inner multiplication operator creates a list with every element
+	containing a reference to the number '0'. If an element is changed later,
+	the reference is updated to the new number. The outer multiplication 
+	operator creates another list with references to the inner list. If a number
+	in the inner list is changed, the list containing this number is modified
+	and its reference does not change because lists are mutable. As the outer
+	list is made up of the same references to this list, all the lists contained
+	in the outer list are changed.
+
+	The key to this is mutability. Multiplying the number for the inner list
+	works because integers are immutable. Multiplying the lists for the outer
+	list does not work as intended as the lists are mutable.
+	"""
+	heatmap_matrix = [[0]*31 for x in range(12)]
 
 	for (date,count) in dataset.items():
 		date = datetime.date(2000 + int(date[0:2]),int(date[2:4]),int(date[4:6]))
@@ -124,13 +138,18 @@ def display_dash(processed_data):
 								x=list(range(1,32)),
 								y=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
 								z=create_heatmap_matrix(processed_data['date_counter']),
+								xgap=1,
+								ygap=1,
 								colorscale='Reds',
 								name='lksjdf',
 								type='heatmap'
 							)
 						],
 						layout=dict(
-							title='Calendar Heatmap'
+							title='Calendar Heatmap',
+							yaxis=dict(
+								autorange='reversed'
+							)
 						)
 					)
 				)
@@ -276,8 +295,6 @@ def process_file(filepath):
 	logging.debug("avg. size: {}".format(avg_size))
 
 	processed_data["average_size"] = avg_size
-
-
 
 	return processed_data
 
