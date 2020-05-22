@@ -28,6 +28,11 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 
+
+external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+WEEKDAYS = ('Mon','Tue','Wed','Thu','Fri','Sat','Sun')
+
 class OrderedCounter(collections.Counter, collections.OrderedDict):
 	'Counter that remembers the order elements are first encountered'
 
@@ -36,10 +41,6 @@ class OrderedCounter(collections.Counter, collections.OrderedDict):
 
 	def __reduce__(self):
 		return self.__class__, (collections.OrderedDict(self),)
-
-
-external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 
 class ContAverage():
@@ -75,7 +76,28 @@ class ContAverage():
 			return self._sum / self._count
 		else:
 			return None
- 
+
+
+class WeekdayAverage():
+	def __init__(self, data = None):
+		self._avg = {}
+
+		if isinstance(data, dict):
+			self._avg = {weekday: ContAverage(data.get(weekday)) for weekday in WEEKDAYS}
+		else:
+			self._avg = {weekday: ContAverage() for weekday in WEEKDAYS}
+
+	def reset(self, data = None):
+		for weekday in WEEKDAYS:
+			self._avg[weekday].reset()
+
+	def update(self, data):
+		for weekday, value in data.items():
+			self._avg[weekday].update(value)
+
+	def result(self):
+		return {weekday: self._avg[weekday].result() for weekday in WEEKDAYS}
+
 
 
 def create_heatmap_matrix(dataset):
@@ -296,19 +318,21 @@ def process_file(filepath):
 	type_counter = collections.Counter()
 
 	# weekday stats
-	avg_size_weekday = ContAverage([10]*3)
+	avg_consistency_weekday = WeekdayAverage({'Mon':(1,5),'Wed':[10,30]})
+	avg_size_weekday = WeekdayAverage({'Tue': 1, 'Fri': [1,3]})
 
-	logging.debug(type(avg_size_weekday))
-	logging.debug(avg_size_weekday.current_sum())
-	logging.debug(avg_size_weekday.current_count())
+	logging.debug(avg_consistency_weekday.result())
 	logging.debug(avg_size_weekday.result())
-	avg_size_weekday.update(20)
-	logging.debug(avg_size_weekday.current_sum())
-	logging.debug(avg_size_weekday.current_count())
+
+	avg_consistency_weekday.reset()
+
+	logging.debug(avg_consistency_weekday.result())
 	logging.debug(avg_size_weekday.result())
-	avg_size_weekday.update([100,200,300])
-	logging.debug(avg_size_weekday.current_sum())
-	logging.debug(avg_size_weekday.current_count())
+
+	avg_consistency_weekday.update({'Mon': 1, 'Wed': 2, 'Sun': 3})
+	avg_size_weekday.update({'Tue': 3, 'Thu': (10,20,50), 'Fri': 8})
+
+	logging.debug(avg_consistency_weekday.result())
 	logging.debug(avg_size_weekday.result())
 
 	for entry in parse_line(filepath):
