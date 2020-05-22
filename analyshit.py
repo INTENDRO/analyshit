@@ -42,6 +42,41 @@ external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 
+class ContAverage():
+	def __init__(self, data = None):
+		self.reset(data)
+
+	def reset(self, data = None):
+		self._count = 0
+		self._sum = 0
+		if isinstance(data, int):
+			self._sum = data
+			self._count = 1
+		elif isinstance(data, list) or isinstance(data, tuple):
+			self._sum = sum(data)
+			self._count = len(data)
+
+	def update(self, data):
+		if isinstance(data, int):
+			self._sum += data
+			self._count += 1
+		elif isinstance(data, list) or isinstance(data, tuple):
+			self._sum += sum(data)
+			self._count += len(data)
+
+	def current_sum(self):
+		return self._sum
+
+	def current_count(self):
+		return self._count
+
+	def result(self):
+		if self._count:
+			return self._sum / self._count
+		else:
+			return None
+ 
+
 
 def create_heatmap_matrix(dataset):
 	"""
@@ -68,7 +103,7 @@ def create_heatmap_matrix(dataset):
 
 		heatmap_matrix[date.month-1][date.day-1] = count
 
-	logging.debug(heatmap_matrix)
+	logging.debug("create_heatmap_matrix output: {}".format(heatmap_matrix))
 
 	return heatmap_matrix
 
@@ -259,6 +294,22 @@ def process_file(filepath):
 	consistency_counter = collections.Counter()
 	size_counter = collections.Counter()
 	type_counter = collections.Counter()
+
+	# weekday stats
+	avg_size_weekday = ContAverage([10]*3)
+
+	logging.debug(type(avg_size_weekday))
+	logging.debug(avg_size_weekday.current_sum())
+	logging.debug(avg_size_weekday.current_count())
+	logging.debug(avg_size_weekday.result())
+	avg_size_weekday.update(20)
+	logging.debug(avg_size_weekday.current_sum())
+	logging.debug(avg_size_weekday.current_count())
+	logging.debug(avg_size_weekday.result())
+	avg_size_weekday.update([100,200,300])
+	logging.debug(avg_size_weekday.current_sum())
+	logging.debug(avg_size_weekday.current_count())
+	logging.debug(avg_size_weekday.result())
 
 	for entry in parse_line(filepath):
 		date_counter.update([entry["date"]])
