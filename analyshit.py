@@ -32,6 +32,8 @@ import dash_html_components as html
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 WEEKDAYS = ('Mon','Tue','Wed','Thu','Fri','Sat','Sun')
+CONSISTENCY_STR2NUM = {'d': 1, 'w': 2, 'n': 3, 'h': 4}
+SIZE_STR2NUM = {'w': 1, 'n': 2, 'g': 3}
 
 class OrderedCounter(collections.Counter, collections.OrderedDict):
 	'Counter that remembers the order elements are first encountered'
@@ -157,9 +159,8 @@ def display_dash(processed_data):
 					"size_counter: {}".format(processed_data['size_counter']),
 					"type_counter: {}".format(processed_data['type_counter']),
 					"date_counter: {}".format(processed_data['date_counter']),
-					"keys: {}".format(processed_data['weekday_counter'].keys()),
-					"values: {}".format(processed_data['weekday_counter'].values()),
-					"items: {}".format(processed_data['weekday_counter'].items())
+					"avg_consistency_weekday: {}".format(processed_data['avg_consistency_weekday']),
+					"avg_size_weekday: {}".format(processed_data['avg_size_weekday'])
 				]),
 				cols= 100,
 				rows=80
@@ -318,22 +319,8 @@ def process_file(filepath):
 	type_counter = collections.Counter()
 
 	# weekday stats
-	avg_consistency_weekday = WeekdayAverage({'Mon':(1,5),'Wed':[10,30]})
-	avg_size_weekday = WeekdayAverage({'Tue': 1, 'Fri': [1,3]})
-
-	logging.debug(avg_consistency_weekday.result())
-	logging.debug(avg_size_weekday.result())
-
-	avg_consistency_weekday.reset()
-
-	logging.debug(avg_consistency_weekday.result())
-	logging.debug(avg_size_weekday.result())
-
-	avg_consistency_weekday.update({'Mon': 1, 'Wed': 2, 'Sun': 3})
-	avg_size_weekday.update({'Tue': 3, 'Thu': (10,20,50), 'Fri': 8})
-
-	logging.debug(avg_consistency_weekday.result())
-	logging.debug(avg_size_weekday.result())
+	avg_consistency_weekday = WeekdayAverage()
+	avg_size_weekday = WeekdayAverage()
 
 	for entry in parse_line(filepath):
 		date_counter.update([entry["date"]])
@@ -341,6 +328,13 @@ def process_file(filepath):
 		consistency_counter.update(entry["consistency"])
 		size_counter.update(entry["size"])
 		type_counter.update([entry["type"]])
+
+		consistency_value = CONSISTENCY_STR2NUM[entry["consistency"]]
+		size_value = SIZE_STR2NUM[entry["size"]]
+
+		avg_consistency_weekday.update({entry["weekday"]: consistency_value})
+		avg_size_weekday.update({entry["weekday"]: size_value})
+
 
 	# convert the weekday counter to an ordered counter using the conventional order of weekdays starting on monday
 	weekday_counter = OrderedCounter({k:weekday_counter[k] for k in ('Mon','Tue','Wed','Thu','Fri','Sat','Sun')})
@@ -350,6 +344,8 @@ def process_file(filepath):
 	logging.debug("size_counter: {}".format(size_counter))
 	logging.debug("type_counter: {}".format(type_counter))
 	logging.debug("date_counter: {}".format(date_counter))
+	logging.debug("avg_consistency_weekday: {}".format(avg_consistency_weekday.result()))
+	logging.debug("avg_size_weekday: {}".format(avg_size_weekday.result()))
 
 
 	processed_data["type_counter"] = type_counter
@@ -357,6 +353,9 @@ def process_file(filepath):
 	processed_data["consistency_counter"] = consistency_counter
 	processed_data["weekday_counter"] = weekday_counter
 	processed_data["date_counter"] = date_counter
+	processed_data["avg_consistency_weekday"] = avg_consistency_weekday.result()
+	processed_data["avg_size_weekday"] = avg_size_weekday.result()
+
 
 
 	# average consistency
