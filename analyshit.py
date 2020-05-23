@@ -10,6 +10,8 @@ Diagrams and Outputs:
 - Average values on Weekdays (consistency, size)
 
 
+To Do:
+- Convert DATES constants list to generator (safe memory)
 """
 
 # General
@@ -34,6 +36,375 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 WEEKDAYS = ('Mon','Tue','Wed','Thu','Fri','Sat','Sun')
 CONSISTENCY_STR2NUM = {'d': 1, 'w': 2, 'n': 3, 'h': 4}
 SIZE_STR2NUM = {'w': 1, 'n': 2, 'g': 3}
+
+DATES = (
+	'200101',
+	'200102',
+	'200103',
+	'200104',
+	'200105',
+	'200106',
+	'200107',
+	'200108',
+	'200109',
+	'200110',
+	'200111',
+	'200112',
+	'200113',
+	'200114',
+	'200115',
+	'200116',
+	'200117',
+	'200118',
+	'200119',
+	'200120',
+	'200121',
+	'200122',
+	'200123',
+	'200124',
+	'200125',
+	'200126',
+	'200127',
+	'200128',
+	'200129',
+	'200130',
+	'200131',
+	'200201',
+	'200202',
+	'200203',
+	'200204',
+	'200205',
+	'200206',
+	'200207',
+	'200208',
+	'200209',
+	'200210',
+	'200211',
+	'200212',
+	'200213',
+	'200214',
+	'200215',
+	'200216',
+	'200217',
+	'200218',
+	'200219',
+	'200220',
+	'200221',
+	'200222',
+	'200223',
+	'200224',
+	'200225',
+	'200226',
+	'200227',
+	'200228',
+	'200229',
+	'200301',
+	'200302',
+	'200303',
+	'200304',
+	'200305',
+	'200306',
+	'200307',
+	'200308',
+	'200309',
+	'200310',
+	'200311',
+	'200312',
+	'200313',
+	'200314',
+	'200315',
+	'200316',
+	'200317',
+	'200318',
+	'200319',
+	'200320',
+	'200321',
+	'200322',
+	'200323',
+	'200324',
+	'200325',
+	'200326',
+	'200327',
+	'200328',
+	'200329',
+	'200330',
+	'200331',
+	'200401',
+	'200402',
+	'200403',
+	'200404',
+	'200405',
+	'200406',
+	'200407',
+	'200408',
+	'200409',
+	'200410',
+	'200411',
+	'200412',
+	'200413',
+	'200414',
+	'200415',
+	'200416',
+	'200417',
+	'200418',
+	'200419',
+	'200420',
+	'200421',
+	'200422',
+	'200423',
+	'200424',
+	'200425',
+	'200426',
+	'200427',
+	'200428',
+	'200429',
+	'200430',
+	'200501',
+	'200502',
+	'200503',
+	'200504',
+	'200505',
+	'200506',
+	'200507',
+	'200508',
+	'200509',
+	'200510',
+	'200511',
+	'200512',
+	'200513',
+	'200514',
+	'200515',
+	'200516',
+	'200517',
+	'200518',
+	'200519',
+	'200520',
+	'200521',
+	'200522',
+	'200523',
+	'200524',
+	'200525',
+	'200526',
+	'200527',
+	'200528',
+	'200529',
+	'200530',
+	'200531',
+	'200601',
+	'200602',
+	'200603',
+	'200604',
+	'200605',
+	'200606',
+	'200607',
+	'200608',
+	'200609',
+	'200610',
+	'200611',
+	'200612',
+	'200613',
+	'200614',
+	'200615',
+	'200616',
+	'200617',
+	'200618',
+	'200619',
+	'200620',
+	'200621',
+	'200622',
+	'200623',
+	'200624',
+	'200625',
+	'200626',
+	'200627',
+	'200628',
+	'200629',
+	'200630',
+	'200701',
+	'200702',
+	'200703',
+	'200704',
+	'200705',
+	'200706',
+	'200707',
+	'200708',
+	'200709',
+	'200710',
+	'200711',
+	'200712',
+	'200713',
+	'200714',
+	'200715',
+	'200716',
+	'200717',
+	'200718',
+	'200719',
+	'200720',
+	'200721',
+	'200722',
+	'200723',
+	'200724',
+	'200725',
+	'200726',
+	'200727',
+	'200728',
+	'200729',
+	'200730',
+	'200731',
+	'200801',
+	'200802',
+	'200803',
+	'200804',
+	'200805',
+	'200806',
+	'200807',
+	'200808',
+	'200809',
+	'200810',
+	'200811',
+	'200812',
+	'200813',
+	'200814',
+	'200815',
+	'200816',
+	'200817',
+	'200818',
+	'200819',
+	'200820',
+	'200821',
+	'200822',
+	'200823',
+	'200824',
+	'200825',
+	'200826',
+	'200827',
+	'200828',
+	'200829',
+	'200830',
+	'200831',
+	'200901',
+	'200902',
+	'200903',
+	'200904',
+	'200905',
+	'200906',
+	'200907',
+	'200908',
+	'200909',
+	'200910',
+	'200911',
+	'200912',
+	'200913',
+	'200914',
+	'200915',
+	'200916',
+	'200917',
+	'200918',
+	'200919',
+	'200920',
+	'200921',
+	'200922',
+	'200923',
+	'200924',
+	'200925',
+	'200926',
+	'200927',
+	'200928',
+	'200929',
+	'200930',
+	'201001',
+	'201002',
+	'201003',
+	'201004',
+	'201005',
+	'201006',
+	'201007',
+	'201008',
+	'201009',
+	'201010',
+	'201011',
+	'201012',
+	'201013',
+	'201014',
+	'201015',
+	'201016',
+	'201017',
+	'201018',
+	'201019',
+	'201020',
+	'201021',
+	'201022',
+	'201023',
+	'201024',
+	'201025',
+	'201026',
+	'201027',
+	'201028',
+	'201029',
+	'201030',
+	'201031',
+	'201101',
+	'201102',
+	'201103',
+	'201104',
+	'201105',
+	'201106',
+	'201107',
+	'201108',
+	'201109',
+	'201110',
+	'201111',
+	'201112',
+	'201113',
+	'201114',
+	'201115',
+	'201116',
+	'201117',
+	'201118',
+	'201119',
+	'201120',
+	'201121',
+	'201122',
+	'201123',
+	'201124',
+	'201125',
+	'201126',
+	'201127',
+	'201128',
+	'201129',
+	'201130',
+	'201201',
+	'201202',
+	'201203',
+	'201204',
+	'201205',
+	'201206',
+	'201207',
+	'201208',
+	'201209',
+	'201210',
+	'201211',
+	'201212',
+	'201213',
+	'201214',
+	'201215',
+	'201216',
+	'201217',
+	'201218',
+	'201219',
+	'201220',
+	'201221',
+	'201222',
+	'201223',
+	'201224',
+	'201225',
+	'201226',
+	'201227',
+	'201228',
+	'201229',
+	'201230',
+	'201231'
+)
 
 class OrderedCounter(collections.Counter, collections.OrderedDict):
 	'Counter that remembers the order elements are first encountered'
@@ -100,6 +471,26 @@ class WeekdayAverage():
 	def result(self):
 		return collections.OrderedDict((weekday, self._avg[weekday].result()) for weekday in WEEKDAYS)
 
+class DateAverage():
+	def __init__(self, data = None):
+		self._avg = {}
+
+		if isinstance(data, dict):
+			self._avg = {date: ContAverage(data.get(date)) for date in DATES}
+		else:
+			self._avg = {date: ContAverage() for date in DATES}
+
+	def reset(self, data = None):
+		for date in DATES:
+			self._avg[date].reset()
+
+	def update(self, data):
+		for date, value in data.items():
+			self._avg[date].update(value)
+
+	def result(self):
+		return collections.OrderedDict((date, self._avg[date].result()) for date in DATES)
+
 
 
 def create_heatmap_matrix(dataset):
@@ -121,11 +512,12 @@ def create_heatmap_matrix(dataset):
 	heatmap_matrix = [[0]*31 for x in range(12)]
 
 	for (date,count) in dataset.items():
-		date = datetime.date(2000 + int(date[0:2]),int(date[2:4]),int(date[4:6]))
-		# date.month contains the needed month index [1-12]
-		# date.day contains the needed day index [1-(however long the month is)]
+		if count is not None:
+			date = datetime.date(2000 + int(date[0:2]),int(date[2:4]),int(date[4:6]))
+			# date.month contains the needed month index [1-12]
+			# date.day contains the needed day index [1-(however long the month is)]
 
-		heatmap_matrix[date.month-1][date.day-1] = count
+			heatmap_matrix[date.month-1][date.day-1] = count
 
 	logging.debug("create_heatmap_matrix output: {}".format(heatmap_matrix))
 
@@ -160,7 +552,9 @@ def display_dash(processed_data):
 					"cnt_type: {}".format(processed_data['cnt_type']),
 					"cnt_sittings_date: {}".format(processed_data['cnt_sittings_date']),
 					"avg_consistency_weekday: {}".format(processed_data['avg_consistency_weekday']),
-					"avg_size_weekday: {}".format(processed_data['avg_size_weekday'])
+					"avg_size_weekday: {}".format(processed_data['avg_size_weekday']),
+					# "avg_consistency_date: {}".format(processed_data['avg_consistency_date']),
+					# "avg_size_date: {}".format(processed_data['avg_size_date'])
 				]),
 				cols= 100,
 				rows=80
@@ -189,7 +583,7 @@ def display_dash(processed_data):
 			),
 			html.Div([
 				dcc.Graph(
-					id='calendar-heatmap',
+					id='sittings-heatmap',
 					figure=dict(
 						data=[
 							dict(
@@ -204,7 +598,7 @@ def display_dash(processed_data):
 							)
 						],
 						layout=dict(
-							title='Calendar Heatmap',
+							title='Sittings Heatmap',
 							yaxis=dict(
 								autorange='reversed'
 							)
@@ -356,6 +750,62 @@ def display_dash(processed_data):
 			)
 		],
 		style={'backgroundColor':'#eeeeee'}
+		),
+
+		html.Div([
+			dcc.Graph(
+				id='consistency-heatmap',
+				figure=dict(
+					data=[
+						dict(
+							x=list(range(1,32)),
+							y=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+							z=create_heatmap_matrix(processed_data['avg_consistency_date']),
+							xgap=1,
+							ygap=1,
+							colorscale='Reds',
+							name='lksjdf',
+							type='heatmap'
+						)
+					],
+					layout=dict(
+						title='Consistency Heatmap',
+						yaxis=dict(
+							autorange='reversed'
+						)
+					)
+				)
+			)
+		],
+		style={'backgroundColor':'#bbbbbb'}
+		),
+
+		html.Div([
+			dcc.Graph(
+				id='size-heatmap',
+				figure=dict(
+					data=[
+						dict(
+							x=list(range(1,32)),
+							y=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+							z=create_heatmap_matrix(processed_data['avg_size_date']),
+							xgap=1,
+							ygap=1,
+							colorscale='Reds',
+							name='lksjdf',
+							type='heatmap'
+						)
+					],
+					layout=dict(
+						title='Size Heatmap',
+						yaxis=dict(
+							autorange='reversed'
+						)
+					)
+				)
+			)
+		],
+		style={'backgroundColor':'#bbbbbb'}
 		)
 	])
 
@@ -415,6 +865,11 @@ def process_file(filepath):
 	avg_consistency_weekday = WeekdayAverage()
 	avg_size_weekday = WeekdayAverage()
 
+	# date stats
+	avg_consistency_date = DateAverage()
+	avg_size_date = DateAverage()
+
+
 	for entry in parse_line(filepath):
 		cnt_sittings_date.update([entry["date"]])
 		cnt_sittings_weekday.update([entry["weekday"]])
@@ -428,6 +883,9 @@ def process_file(filepath):
 		avg_consistency_weekday.update({entry["weekday"]: consistency_value})
 		avg_size_weekday.update({entry["weekday"]: size_value})
 
+		avg_consistency_date.update({entry["date"]: consistency_value})
+		avg_size_date.update({entry["date"]: size_value})
+
 
 	# convert the weekday counter to an ordered counter using the conventional order of weekdays starting on monday
 	cnt_sittings_weekday = OrderedCounter({k:cnt_sittings_weekday[k] for k in ('Mon','Tue','Wed','Thu','Fri','Sat','Sun')})
@@ -439,6 +897,8 @@ def process_file(filepath):
 	logging.debug("cnt_sittings_date: {}".format(cnt_sittings_date))
 	logging.debug("avg_consistency_weekday: {}".format(avg_consistency_weekday.result()))
 	logging.debug("avg_size_weekday: {}".format(avg_size_weekday.result()))
+	logging.debug("avg_consistency_date: {}".format(avg_consistency_date.result()))
+	logging.debug("avg_size_date: {}".format(avg_size_date.result()))
 
 
 	processed_data["cnt_type"] = cnt_type
@@ -448,6 +908,8 @@ def process_file(filepath):
 	processed_data["cnt_sittings_date"] = cnt_sittings_date
 	processed_data["avg_consistency_weekday"] = avg_consistency_weekday.result()
 	processed_data["avg_size_weekday"] = avg_size_weekday.result()
+	processed_data["avg_consistency_date"] = avg_consistency_date.result()
+	processed_data["avg_size_date"] = avg_size_date.result()
 
 
 
