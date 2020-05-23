@@ -154,11 +154,11 @@ def display_dash(processed_data):
 			html.Textarea("\n".join([
 					"average_consistency: {}".format(processed_data['average_consistency']),
 					"average_size: {}".format(processed_data['average_size']),
-					"weekday_counter: {}".format(processed_data['weekday_counter']),
-					"consistency_counter: {}".format(processed_data['consistency_counter']),
-					"size_counter: {}".format(processed_data['size_counter']),
-					"type_counter: {}".format(processed_data['type_counter']),
-					"date_counter: {}".format(processed_data['date_counter']),
+					"cnt_sittings_weekday: {}".format(processed_data['cnt_sittings_weekday']),
+					"cnt_consistency: {}".format(processed_data['cnt_consistency']),
+					"cnt_size: {}".format(processed_data['cnt_size']),
+					"cnt_type: {}".format(processed_data['cnt_type']),
+					"cnt_sittings_date: {}".format(processed_data['cnt_sittings_date']),
 					"avg_consistency_weekday: {}".format(processed_data['avg_consistency_weekday']),
 					"avg_size_weekday: {}".format(processed_data['avg_size_weekday'])
 				]),
@@ -170,11 +170,11 @@ def display_dash(processed_data):
 		html.Div([
 			html.Label("Avg. Consistency: {:.3f}".format(processed_data["average_consistency"]), style=avg_count_style),
 			html.Label("Avg. Size: {:.3f}".format(processed_data["average_size"]), style=avg_count_style),
-			html.Label("Glück Count: {}".format(processed_data["type_counter"]["glück"]), style=avg_count_style),
-			html.Label("Ninja Count: {}".format(processed_data["type_counter"]["ninja"]), style=avg_count_style),
-			html.Label("Neocolor Count: {}".format(processed_data["type_counter"]["neocolor"]), style=avg_count_style),
-			html.Label("Geiss Count: {}".format(processed_data["type_counter"]["geiss"]), style=avg_count_style),
-			html.Label("Bier Count: {}".format(processed_data["type_counter"]["bier"]), style=avg_count_style), 
+			html.Label("Glück Count: {}".format(processed_data["cnt_type"]["glück"]), style=avg_count_style),
+			html.Label("Ninja Count: {}".format(processed_data["cnt_type"]["ninja"]), style=avg_count_style),
+			html.Label("Neocolor Count: {}".format(processed_data["cnt_type"]["neocolor"]), style=avg_count_style),
+			html.Label("Geiss Count: {}".format(processed_data["cnt_type"]["geiss"]), style=avg_count_style),
+			html.Label("Bier Count: {}".format(processed_data["cnt_type"]["bier"]), style=avg_count_style), 
 		],
 		style={'columnCount':2, 'backgroundColor':'#eeeeee'}
 		),
@@ -195,7 +195,7 @@ def display_dash(processed_data):
 							dict(
 								x=list(range(1,32)),
 								y=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-								z=create_heatmap_matrix(processed_data['date_counter']),
+								z=create_heatmap_matrix(processed_data['cnt_sittings_date']),
 								xgap=1,
 								ygap=1,
 								colorscale='Reds',
@@ -247,7 +247,7 @@ def display_dash(processed_data):
 				figure={
 					'data': [
 						{
-							'y': list(processed_data['weekday_counter'].values()),
+							'y': list(processed_data['cnt_sittings_weekday'].values()),
 							'type': 'bar'
 						},
 					],
@@ -256,7 +256,7 @@ def display_dash(processed_data):
 						'xaxis': {
 							'title': 'Weekday',
 							'tickvals': [0,1,2,3,4,5,6],
-							'ticktext': list(processed_data['weekday_counter'].keys())
+							'ticktext': list(processed_data['cnt_sittings_weekday'].keys())
 						}
 					}
 				}
@@ -405,22 +405,22 @@ def process_file(filepath):
 
 
 	# counts
-	date_counter = OrderedCounter()
-	weekday_counter = collections.Counter()
-	consistency_counter = collections.Counter()
-	size_counter = collections.Counter()
-	type_counter = collections.Counter()
+	cnt_sittings_date = OrderedCounter()
+	cnt_sittings_weekday = collections.Counter()
+	cnt_consistency = collections.Counter()
+	cnt_size = collections.Counter()
+	cnt_type = collections.Counter()
 
 	# weekday stats
 	avg_consistency_weekday = WeekdayAverage()
 	avg_size_weekday = WeekdayAverage()
 
 	for entry in parse_line(filepath):
-		date_counter.update([entry["date"]])
-		weekday_counter.update([entry["weekday"]])
-		consistency_counter.update(entry["consistency"])
-		size_counter.update(entry["size"])
-		type_counter.update([entry["type"]])
+		cnt_sittings_date.update([entry["date"]])
+		cnt_sittings_weekday.update([entry["weekday"]])
+		cnt_consistency.update(entry["consistency"])
+		cnt_size.update(entry["size"])
+		cnt_type.update([entry["type"]])
 
 		consistency_value = CONSISTENCY_STR2NUM[entry["consistency"]]
 		size_value = SIZE_STR2NUM[entry["size"]]
@@ -430,35 +430,35 @@ def process_file(filepath):
 
 
 	# convert the weekday counter to an ordered counter using the conventional order of weekdays starting on monday
-	weekday_counter = OrderedCounter({k:weekday_counter[k] for k in ('Mon','Tue','Wed','Thu','Fri','Sat','Sun')})
+	cnt_sittings_weekday = OrderedCounter({k:cnt_sittings_weekday[k] for k in ('Mon','Tue','Wed','Thu','Fri','Sat','Sun')})
 
-	logging.debug("weekday_counter: {}".format(weekday_counter))
-	logging.debug("consistency_counter: {}".format(consistency_counter))
-	logging.debug("size_counter: {}".format(size_counter))
-	logging.debug("type_counter: {}".format(type_counter))
-	logging.debug("date_counter: {}".format(date_counter))
+	logging.debug("cnt_sittings_weekday: {}".format(cnt_sittings_weekday))
+	logging.debug("cnt_consistency: {}".format(cnt_consistency))
+	logging.debug("cnt_size: {}".format(cnt_size))
+	logging.debug("cnt_type: {}".format(cnt_type))
+	logging.debug("cnt_sittings_date: {}".format(cnt_sittings_date))
 	logging.debug("avg_consistency_weekday: {}".format(avg_consistency_weekday.result()))
 	logging.debug("avg_size_weekday: {}".format(avg_size_weekday.result()))
 
 
-	processed_data["type_counter"] = type_counter
-	processed_data["size_counter"] = size_counter
-	processed_data["consistency_counter"] = consistency_counter
-	processed_data["weekday_counter"] = weekday_counter
-	processed_data["date_counter"] = date_counter
+	processed_data["cnt_type"] = cnt_type
+	processed_data["cnt_size"] = cnt_size
+	processed_data["cnt_consistency"] = cnt_consistency
+	processed_data["cnt_sittings_weekday"] = cnt_sittings_weekday
+	processed_data["cnt_sittings_date"] = cnt_sittings_date
 	processed_data["avg_consistency_weekday"] = avg_consistency_weekday.result()
 	processed_data["avg_size_weekday"] = avg_size_weekday.result()
 
 
 
 	# average consistency
-	avg_const = (1*consistency_counter["d"] + 2*consistency_counter["w"] + 3*consistency_counter["n"] + 4*consistency_counter["h"]) / sum(consistency_counter.values())
+	avg_const = (1*cnt_consistency["d"] + 2*cnt_consistency["w"] + 3*cnt_consistency["n"] + 4*cnt_consistency["h"]) / sum(cnt_consistency.values())
 	logging.debug("avg. consistency: {}".format(avg_const))
 
 	processed_data["average_consistency"] = avg_const
 
 	# average size
-	avg_size = (1*size_counter["w"] + 2*size_counter["n"] + 3*size_counter["g"]) / sum(size_counter.values())
+	avg_size = (1*cnt_size["w"] + 2*cnt_size["n"] + 3*cnt_size["g"]) / sum(cnt_size.values())
 	logging.debug("avg. size: {}".format(avg_size))
 
 	processed_data["average_size"] = avg_size
