@@ -98,7 +98,7 @@ class WeekdayAverage():
 			self._avg[weekday].update(value)
 
 	def result(self):
-		return {weekday: self._avg[weekday].result() for weekday in WEEKDAYS}
+		return collections.OrderedDict((weekday, self._avg[weekday].result()) for weekday in WEEKDAYS)
 
 
 
@@ -257,6 +257,66 @@ def display_dash(processed_data):
 							'title': 'Weekday',
 							'tickvals': [0,1,2,3,4,5,6],
 							'ticktext': list(processed_data['weekday_counter'].keys())
+						}
+					}
+				}
+			)
+		],
+		style={'backgroundColor':'#eeeeee'}
+		),
+
+		html.Div([
+			dcc.Graph(
+				id='avg-consistency-weekday-bar',
+				figure={
+					'data': [
+						{
+							'y': list(processed_data['avg_consistency_weekday'].values()),
+							'type': 'bar'
+						},
+					],
+					'layout': {
+						'title': 'Average Consistency vs. Weekday',
+						'xaxis': {
+							'title': 'Weekday',
+							'tickvals': [0,1,2,3,4,5,6],
+							'ticktext': list(processed_data['avg_consistency_weekday'].keys())
+						},
+						'yaxis': {
+							'title': 'Weekday',
+							'tickvals': [1,2,3,4],
+							'ticktext': ['d','w','n','h'],
+							'range':[1,4]
+						}
+					}
+				}
+			)
+		],
+		style={'backgroundColor':'#eeeeee'}
+		),
+
+		html.Div([
+			dcc.Graph(
+				id='avg-size-weekday-bar',
+				figure={
+					'data': [
+						{
+							'y': list(processed_data['avg_size_weekday'].values()),
+							'type': 'bar'
+						},
+					],
+					'layout': {
+						'title': 'Average Size vs. Weekday',
+						'xaxis': {
+							'title': 'Weekday',
+							'tickvals': [0,1,2,3,4,5,6],
+							'ticktext': list(processed_data['avg_size_weekday'].keys())
+						},
+						'yaxis': {
+							'title': 'Weekday',
+							'tickvals': [1,2,3],
+							'ticktext': ['w','n','g'],
+							'range':[1,3]
 						}
 					}
 				}
