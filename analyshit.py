@@ -283,7 +283,7 @@ def display_dash(processed_data):
 							'ticktext': list(processed_data['avg_consistency_weekday'].keys())
 						},
 						'yaxis': {
-							'title': 'Weekday',
+							'title': 'Consistency',
 							'tickvals': [1,2,3,4],
 							'ticktext': ['d','w','n','h'],
 							'range':[1,4]
@@ -313,10 +313,43 @@ def display_dash(processed_data):
 							'ticktext': list(processed_data['avg_size_weekday'].keys())
 						},
 						'yaxis': {
-							'title': 'Weekday',
+							'title': 'Size',
 							'tickvals': [1,2,3],
 							'ticktext': ['w','n','g'],
 							'range':[1,3]
+						}
+					}
+				}
+			)
+		],
+		style={'backgroundColor':'#eeeeee'}
+		),
+
+		html.Div([
+			dcc.Graph(
+				id='avg-consistency-size-weekday-bar',
+				figure={
+					'data': [
+						{
+							'name': "Consistency",
+							'y': list(processed_data['avg_consistency_weekday'].values()),
+							'type': 'bar'
+						},
+						{
+							'name': "Size",
+							'y': list(processed_data['avg_size_weekday'].values()),
+							'type': 'bar'
+						}
+					],
+					'layout': {
+						'title': 'Average Values vs. Weekday',
+						'xaxis': {
+							'title': 'Weekday',
+							'tickvals': [0,1,2,3,4,5,6],
+							'ticktext': list(processed_data['avg_size_weekday'].keys())
+						},
+						'yaxis': {
+							'range':[1,4]
 						}
 					}
 				}
