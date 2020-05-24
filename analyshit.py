@@ -34,10 +34,12 @@ import dash_html_components as html
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-WEEKDAYS = ('Mon','Tue','Wed','Thu','Fri','Sat','Sun')
+
 CONSISTENCY_STR2NUM = {'d': 1, 'w': 2, 'n': 3, 'h': 4}
 SIZE_STR2NUM = {'w': 1, 'n': 2, 'g': 3}
 
+MONTHS = ('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec')
+WEEKDAYS = ('Mon','Tue','Wed','Thu','Fri','Sat','Sun')
 DATES = (
 	'200101',
 	'200102',
@@ -466,6 +468,8 @@ class TimeSpanAverage():
 			self._timespan_list = WEEKDAYS
 		elif timespan == TimeSpan.WEEK:
 			self._timespan_list = list(range(1,54))
+		elif timespan == TimeSpan.MONTH:
+			self._timespan_list = MONTHS
 
 
 		if isinstance(data, dict):
@@ -544,6 +548,8 @@ def display_dash(processed_data):
 					"cnt_size: {}".format(processed_data['cnt_size']),
 					"cnt_type: {}".format(processed_data['cnt_type']),
 					"cnt_sittings_date: {}".format(processed_data['cnt_sittings_date']),
+					"avg_consistency_month: {}".format(processed_data['avg_consistency_month']),
+					"avg_size_month: {}".format(processed_data['avg_size_month']),
 					"avg_consistency_week: {}".format(processed_data['avg_consistency_week']),
 					"avg_size_week: {}".format(processed_data['avg_size_week']),
 					"avg_consistency_weekday: {}".format(processed_data['avg_consistency_weekday']),
@@ -855,6 +861,60 @@ def display_dash(processed_data):
 			)
 		],
 		style={'backgroundColor':'#eeeeee'}
+		),
+
+		html.Div([
+			dcc.Graph(
+				id='avg-consistency-month-bar',
+				figure={
+					'data': [
+						{
+							'name': "Consistency",
+							'x': list(processed_data['avg_consistency_month'].keys()),
+							'y': list(processed_data['avg_consistency_month'].values()),
+							'type': 'bar'
+						}
+					],
+					'layout': {
+						'title': 'Average Consistency vs. Month',
+						'xaxis': {
+							'title': 'Month',
+						},
+						'yaxis': {
+							'range':[1,4]
+						}
+					}
+				}
+			)
+		],
+		style={'backgroundColor':'#eeeeee'}
+		),
+
+		html.Div([
+			dcc.Graph(
+				id='avg-size-month-bar',
+				figure={
+					'data': [
+						{
+							'name': "Size",
+							'x': list(processed_data['avg_size_month'].keys()),
+							'y': list(processed_data['avg_size_month'].values()),
+							'type': 'bar'
+						}
+					],
+					'layout': {
+						'title': 'Average Size vs. Month',
+						'xaxis': {
+							'title': 'Month',
+						},
+						'yaxis': {
+							'range':[1,3]
+						}
+					}
+				}
+			)
+		],
+		style={'backgroundColor':'#eeeeee'}
 		)
 	])
 
@@ -888,6 +948,7 @@ def parse_line(filepath):
 				entry["month"] = match.group(2)
 				entry["year"] = match.group(3)
 				entry["date"] = match.group(3)+match.group(2)+match.group(1)
+				entry["month_str"] = date.strftime("%b")
 				entry["weekday"] = date.strftime("%a")
 				entry["weeknum"] = date.isocalendar()[1]
 				entry["consistency"] = match.group(4)
@@ -912,6 +973,10 @@ def process_file(filepath):
 	cnt_size = collections.Counter()
 	cnt_type = collections.Counter()
 
+	# month stats
+	avg_consistency_month = TimeSpanAverage(timespan = TimeSpan.MONTH)
+	avg_size_month = TimeSpanAverage(timespan = TimeSpan.MONTH)
+
 	# week stats
 	avg_consistency_week = TimeSpanAverage(timespan = TimeSpan.WEEK)
 	avg_size_week = TimeSpanAverage(timespan = TimeSpan.WEEK)
@@ -935,6 +1000,9 @@ def process_file(filepath):
 		consistency_value = CONSISTENCY_STR2NUM[entry["consistency"]]
 		size_value = SIZE_STR2NUM[entry["size"]]
 
+		avg_consistency_month.update({entry["month_str"]: consistency_value})
+		avg_size_month.update({entry["month_str"]: size_value})
+
 		avg_consistency_week.update({entry["weeknum"]: consistency_value})
 		avg_size_week.update({entry["weeknum"]: size_value})
 
@@ -953,6 +1021,8 @@ def process_file(filepath):
 	logging.debug("cnt_size: {}".format(cnt_size))
 	logging.debug("cnt_type: {}".format(cnt_type))
 	logging.debug("cnt_sittings_date: {}".format(cnt_sittings_date))
+	logging.debug("avg_consistency_month: {}".format(avg_consistency_month.result()))
+	logging.debug("avg_size_month: {}".format(avg_size_month.result()))
 	logging.debug("avg_consistency_week: {}".format(avg_consistency_week.result()))
 	logging.debug("avg_size_week: {}".format(avg_size_week.result()))
 	logging.debug("avg_consistency_weekday: {}".format(avg_consistency_weekday.result()))
@@ -966,6 +1036,8 @@ def process_file(filepath):
 	processed_data["cnt_consistency"] = cnt_consistency
 	processed_data["cnt_sittings_weekday"] = cnt_sittings_weekday
 	processed_data["cnt_sittings_date"] = cnt_sittings_date
+	processed_data["avg_consistency_month"] = avg_consistency_month.result()
+	processed_data["avg_size_month"] = avg_size_month.result()
 	processed_data["avg_consistency_week"] = avg_consistency_week.result()
 	processed_data["avg_size_week"] = avg_size_week.result()
 	processed_data["avg_consistency_weekday"] = avg_consistency_weekday.result()
