@@ -801,6 +801,60 @@ def display_dash(processed_data):
 			)
 		],
 		style={'backgroundColor':'#bbbbbb'}
+		),
+
+		html.Div([
+			dcc.Graph(
+				id='avg-consistency-week-bar',
+				figure={
+					'data': [
+						{
+							'name': "Consistency",
+							'x': list(processed_data['avg_consistency_week'].keys()),
+							'y': list(processed_data['avg_consistency_week'].values()),
+							'type': 'bar'
+						}
+					],
+					'layout': {
+						'title': 'Average Consistency vs. Week',
+						'xaxis': {
+							'title': 'Week',
+						},
+						'yaxis': {
+							'range':[1,4]
+						}
+					}
+				}
+			)
+		],
+		style={'backgroundColor':'#eeeeee'}
+		),
+
+		html.Div([
+			dcc.Graph(
+				id='avg-size-week-bar',
+				figure={
+					'data': [
+						{
+							'name': "Size",
+							'x': list(processed_data['avg_size_week'].keys()),
+							'y': list(processed_data['avg_size_week'].values()),
+							'type': 'bar'
+						}
+					],
+					'layout': {
+						'title': 'Average Size vs. Week',
+						'xaxis': {
+							'title': 'Week',
+						},
+						'yaxis': {
+							'range':[1,3]
+						}
+					}
+				}
+			)
+		],
+		style={'backgroundColor':'#eeeeee'}
 		)
 	])
 
