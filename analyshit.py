@@ -22,6 +22,7 @@ import logging
 import re
 import collections
 import datetime
+from enum import Enum
 
 # Dash
 import dash
@@ -450,46 +451,38 @@ class ContAverage():
 		else:
 			return None
 
+class TimeSpan(Enum):
+	DATE = 1
+	WEEKDAY = 2
+	WEEK = 3
+	MONTH = 4
 
-class WeekdayAverage():
-	def __init__(self, data = None):
+class TimeSpanAverage():
+	def __init__(self, *, data = None, timespan = TimeSpan.DATE):
 		self._avg = {}
+		if timespan == TimeSpan.DATE:
+			self._timespan_list = DATES
+		elif timespan == TimeSpan.WEEKDAY:
+			self._timespan_list = WEEKDAYS
+		elif timespan == TimeSpan.WEEK:
+			self._timespan_list = list(range(1,54))
+
 
 		if isinstance(data, dict):
-			self._avg = {weekday: ContAverage(data.get(weekday)) for weekday in WEEKDAYS}
+			self._avg = {timespan: ContAverage(data.get(timespan)) for timespan in self._timespan_list}
 		else:
-			self._avg = {weekday: ContAverage() for weekday in WEEKDAYS}
+			self._avg = {timespan: ContAverage() for timespan in self._timespan_list}
 
 	def reset(self, data = None):
-		for weekday in WEEKDAYS:
-			self._avg[weekday].reset()
+		for timespan in self._timespan_list:
+			self._avg[timespan].reset()
 
 	def update(self, data):
-		for weekday, value in data.items():
-			self._avg[weekday].update(value)
+		for timespan, value in data.items():
+			self._avg[timespan].update(value)
 
 	def result(self):
-		return collections.OrderedDict((weekday, self._avg[weekday].result()) for weekday in WEEKDAYS)
-
-class DateAverage():
-	def __init__(self, data = None):
-		self._avg = {}
-
-		if isinstance(data, dict):
-			self._avg = {date: ContAverage(data.get(date)) for date in DATES}
-		else:
-			self._avg = {date: ContAverage() for date in DATES}
-
-	def reset(self, data = None):
-		for date in DATES:
-			self._avg[date].reset()
-
-	def update(self, data):
-		for date, value in data.items():
-			self._avg[date].update(value)
-
-	def result(self):
-		return collections.OrderedDict((date, self._avg[date].result()) for date in DATES)
+		return collections.OrderedDict((timespan, self._avg[timespan].result()) for timespan in self._timespan_list)
 
 
 
@@ -551,6 +544,8 @@ def display_dash(processed_data):
 					"cnt_size: {}".format(processed_data['cnt_size']),
 					"cnt_type: {}".format(processed_data['cnt_type']),
 					"cnt_sittings_date: {}".format(processed_data['cnt_sittings_date']),
+					"avg_consistency_week: {}".format(processed_data['avg_consistency_week']),
+					"avg_size_week: {}".format(processed_data['avg_size_week']),
 					"avg_consistency_weekday: {}".format(processed_data['avg_consistency_weekday']),
 					"avg_size_weekday: {}".format(processed_data['avg_size_weekday']),
 					# "avg_consistency_date: {}".format(processed_data['avg_consistency_date']),
@@ -834,11 +829,13 @@ def parse_line(filepath):
 			match = regex.search(line)
 			if match:
 				entry = {}
+				date = datetime.date(2000 + int(match.group(3)),int(match.group(2)),int(match.group(1)))
 				entry["day"] = match.group(1)
 				entry["month"] = match.group(2)
 				entry["year"] = match.group(3)
 				entry["date"] = match.group(3)+match.group(2)+match.group(1)
-				entry["weekday"] = datetime.date(2000 + int(match.group(3)),int(match.group(2)),int(match.group(1))).strftime("%a")
+				entry["weekday"] = date.strftime("%a")
+				entry["weeknum"] = date.isocalendar()[1]
 				entry["consistency"] = match.group(4)
 				entry["size"] = match.group(5)
 				entry["type"] = match.group(6)
@@ -861,13 +858,17 @@ def process_file(filepath):
 	cnt_size = collections.Counter()
 	cnt_type = collections.Counter()
 
+	# week stats
+	avg_consistency_week = TimeSpanAverage(timespan = TimeSpan.WEEK)
+	avg_size_week = TimeSpanAverage(timespan = TimeSpan.WEEK)
+
 	# weekday stats
-	avg_consistency_weekday = WeekdayAverage()
-	avg_size_weekday = WeekdayAverage()
+	avg_consistency_weekday = TimeSpanAverage(timespan = TimeSpan.WEEKDAY)
+	avg_size_weekday = TimeSpanAverage(timespan = TimeSpan.WEEKDAY)
 
 	# date stats
-	avg_consistency_date = DateAverage()
-	avg_size_date = DateAverage()
+	avg_consistency_date = TimeSpanAverage(timespan = TimeSpan.DATE)
+	avg_size_date = TimeSpanAverage(timespan = TimeSpan.DATE)
 
 
 	for entry in parse_line(filepath):
@@ -879,6 +880,9 @@ def process_file(filepath):
 
 		consistency_value = CONSISTENCY_STR2NUM[entry["consistency"]]
 		size_value = SIZE_STR2NUM[entry["size"]]
+
+		avg_consistency_week.update({entry["weeknum"]: consistency_value})
+		avg_size_week.update({entry["weeknum"]: size_value})
 
 		avg_consistency_weekday.update({entry["weekday"]: consistency_value})
 		avg_size_weekday.update({entry["weekday"]: size_value})
@@ -895,6 +899,8 @@ def process_file(filepath):
 	logging.debug("cnt_size: {}".format(cnt_size))
 	logging.debug("cnt_type: {}".format(cnt_type))
 	logging.debug("cnt_sittings_date: {}".format(cnt_sittings_date))
+	logging.debug("avg_consistency_week: {}".format(avg_consistency_week.result()))
+	logging.debug("avg_size_week: {}".format(avg_size_week.result()))
 	logging.debug("avg_consistency_weekday: {}".format(avg_consistency_weekday.result()))
 	logging.debug("avg_size_weekday: {}".format(avg_size_weekday.result()))
 	logging.debug("avg_consistency_date: {}".format(avg_consistency_date.result()))
@@ -906,6 +912,8 @@ def process_file(filepath):
 	processed_data["cnt_consistency"] = cnt_consistency
 	processed_data["cnt_sittings_weekday"] = cnt_sittings_weekday
 	processed_data["cnt_sittings_date"] = cnt_sittings_date
+	processed_data["avg_consistency_week"] = avg_consistency_week.result()
+	processed_data["avg_size_week"] = avg_size_week.result()
 	processed_data["avg_consistency_weekday"] = avg_consistency_weekday.result()
 	processed_data["avg_size_weekday"] = avg_size_weekday.result()
 	processed_data["avg_consistency_date"] = avg_consistency_date.result()
