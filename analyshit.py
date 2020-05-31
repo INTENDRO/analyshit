@@ -962,8 +962,8 @@ def display_dash(processed_data):
 					'data': [
 						{
 							'name': "Consistency",
-							'x': list(processed_data['consistency_month'].keys()),
-							'y': list(processed_data['consistency_month'].values()),
+							'x': 'Jan',
+							'y': processed_data['consistency_month']['Jan'],
 							'type': 'box'
 						}
 					],
