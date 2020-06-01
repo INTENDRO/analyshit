@@ -23,6 +23,7 @@ import logging
 import re
 import collections
 import datetime
+import statistics
 from enum import Enum
 
 # Dash
@@ -523,6 +524,73 @@ class TimeSpanList():
 				self._avg[timespan].extend(value)
 
 	def result(self):
+		return collections.OrderedDict((timespan, self._avg[timespan]) for timespan in self._timespan_list)
+
+
+class TimeSpanStats():
+	def __init__(self, *, data = None, timespan = TimeSpan.DATE):
+		self._avg = {}
+		if timespan == TimeSpan.DATE:
+			self._timespan_list = DATES
+		elif timespan == TimeSpan.WEEKDAY:
+			self._timespan_list = WEEKDAYS
+		elif timespan == TimeSpan.WEEK:
+			self._timespan_list = list(range(1,54))
+		elif timespan == TimeSpan.MONTH:
+			self._timespan_list = MONTHS
+
+
+		if isinstance(data, dict):
+			self._avg = {timespan: data.get(timespan) if isinstance(data.get(timespan),list) else [data.get(timespan)] for timespan in self._timespan_list}
+		else:
+			self._avg = {timespan: [] for timespan in self._timespan_list}
+
+		for key in self._avg.keys():
+			if self._avg[key] == [None]:
+				self._avg[key] = []
+
+	def reset(self, data = None):
+		for timespan in self._timespan_list:
+			self._avg[timespan] = []
+
+	def update(self, data):
+		for timespan, value in data.items():
+			try:
+				if isinstance(value, collections.Iterable):
+					self._avg[timespan].extend(value)
+				else:
+					self._avg[timespan].append(value)
+			except Exception as e:
+				print(e)
+
+	def average(self):
+		def get_average(data):
+			try:
+				return statistics.mean(data)
+			except statistics.StatisticsError:
+				return None
+
+		return collections.OrderedDict((timespan, get_average(self._avg[timespan])) for timespan in self._timespan_list)
+
+	def median(self):
+		def get_median(data):
+			try:
+				return statistics.median(data)
+			except statistics.StatisticsError:
+				return None
+
+		return collections.OrderedDict((timespan, get_median(self._avg[timespan])) for timespan in self._timespan_list)
+
+	def stdev(self):
+		def get_stdev(data):
+			try:
+				return statistics.stdev(data)
+			except statistics.StatisticsError:
+				return None
+
+		return collections.OrderedDict((timespan, get_stdev(self._avg[timespan])) for timespan in self._timespan_list)
+
+	def items(self):
 		return collections.OrderedDict((timespan, self._avg[timespan]) for timespan in self._timespan_list)
 
 
@@ -1042,6 +1110,21 @@ def process_file(filepath):
 	avg_consistency_month = TimeSpanAverage(timespan = TimeSpan.MONTH)
 	avg_size_month = TimeSpanAverage(timespan = TimeSpan.MONTH)
 	consistency_month = TimeSpanList(timespan = TimeSpan.MONTH)
+	testo = TimeSpanStats(timespan = TimeSpan.MONTH)
+
+	logging.debug("items: {}".format(testo.items()))
+	# logging.debug("average: {}".format(testo.average()))
+
+	testo.update(data={'Jan':1, 'Feb': [1,1,1,2], 'Mar': (1,2,6)})
+
+	logging.debug("items: {}".format(testo.items()))
+
+	logging.debug("average: {}".format(testo.average()))
+	logging.debug("median: {}".format(testo.median()))
+	logging.debug("stdev: {}".format(testo.stdev()))
+
+
+
 
 	# week stats
 	avg_consistency_week = TimeSpanAverage(timespan = TimeSpan.WEEK)
