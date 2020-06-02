@@ -563,32 +563,50 @@ class TimeSpanStats():
 			except Exception as e:
 				print(e)
 
-	def average(self):
+	def average(self, timespan=None):
 		def get_average(data):
 			try:
 				return statistics.mean(data)
 			except statistics.StatisticsError:
 				return None
 
-		return collections.OrderedDict((timespan, get_average(self._avg[timespan])) for timespan in self._timespan_list)
+		if timespan is None:
+			return collections.OrderedDict((timespan, get_average(self._avg[timespan])) for timespan in self._timespan_list)
+		else:
+			try:
+				return get_average(self._avg[timespan])
+			except KeyError:
+				return None
 
-	def median(self):
+	def median(self, timespan=None):
 		def get_median(data):
 			try:
 				return statistics.median(data)
 			except statistics.StatisticsError:
 				return None
 
-		return collections.OrderedDict((timespan, get_median(self._avg[timespan])) for timespan in self._timespan_list)
+		if timespan is None:
+			return collections.OrderedDict((timespan, get_median(self._avg[timespan])) for timespan in self._timespan_list)
+		else:
+			try:
+				return get_median(self._avg[timespan])
+			except KeyError:
+				return None
 
-	def stdev(self):
+	def stdev(self, timespan=None):
 		def get_stdev(data):
 			try:
 				return statistics.stdev(data)
 			except statistics.StatisticsError:
 				return None
 
-		return collections.OrderedDict((timespan, get_stdev(self._avg[timespan])) for timespan in self._timespan_list)
+		if timespan is None:
+			return collections.OrderedDict((timespan, get_stdev(self._avg[timespan])) for timespan in self._timespan_list)
+		else:
+			try:
+				return get_stdev(self._avg[timespan])
+			except KeyError:
+				return None
 
 	def items(self):
 		return collections.OrderedDict((timespan, self._avg[timespan]) for timespan in self._timespan_list)
@@ -1110,18 +1128,19 @@ def process_file(filepath):
 	avg_consistency_month = TimeSpanAverage(timespan = TimeSpan.MONTH)
 	avg_size_month = TimeSpanAverage(timespan = TimeSpan.MONTH)
 	consistency_month = TimeSpanList(timespan = TimeSpan.MONTH)
-	testo = TimeSpanStats(timespan = TimeSpan.MONTH)
+	consistency_stats_month = TimeSpanStats(timespan = TimeSpan.MONTH)
 
-	logging.debug("items: {}".format(testo.items()))
-	# logging.debug("average: {}".format(testo.average()))
+	logging.debug("items: {}".format(consistency_stats_month.items()))
+	# logging.debug("average: {}".format(consistency_stats_month.average()))
 
-	testo.update(data={'Jan':1, 'Feb': [1,1,1,2], 'Mar': (1,2,6)})
+	consistency_stats_month.update(data={'Jan':1, 'Feb': [1,1,1,2], 'Mar': (1,2,6)})
 
-	logging.debug("items: {}".format(testo.items()))
+	logging.debug("items: {}".format(consistency_stats_month.items()))
 
-	logging.debug("average: {}".format(testo.average()))
-	logging.debug("median: {}".format(testo.median()))
-	logging.debug("stdev: {}".format(testo.stdev()))
+	logging.debug("average: {}".format(consistency_stats_month.average()))
+	logging.debug("median: {}".format(consistency_stats_month.median()))
+	logging.debug("stdev: {}".format(consistency_stats_month.stdev()))
+	logging.debug("feb stdev: {}".format(consistency_stats_month.stdev(timespan='Feb')))
 
 
 
