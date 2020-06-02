@@ -529,7 +529,8 @@ class TimeSpanList():
 
 class TimeSpanStats():
 	def __init__(self, *, data = None, timespan = TimeSpan.DATE):
-		self._avg = {}
+		self._items = {}
+		self._timespan = timespan
 		if timespan == TimeSpan.DATE:
 			self._timespan_list = DATES
 		elif timespan == TimeSpan.WEEKDAY:
@@ -541,25 +542,25 @@ class TimeSpanStats():
 
 
 		if isinstance(data, dict):
-			self._avg = {timespan: data.get(timespan) if isinstance(data.get(timespan),list) else [data.get(timespan)] for timespan in self._timespan_list}
+			self._items = {timespan: data.get(timespan) if isinstance(data.get(timespan),list) else [data.get(timespan)] for timespan in self._timespan_list}
 		else:
-			self._avg = {timespan: [] for timespan in self._timespan_list}
+			self._items = {timespan: [] for timespan in self._timespan_list}
 
-		for key in self._avg.keys():
-			if self._avg[key] == [None]:
-				self._avg[key] = []
+		for key in self._items.keys():
+			if self._items[key] == [None]:
+				self._items[key] = []
 
 	def reset(self, data = None):
 		for timespan in self._timespan_list:
-			self._avg[timespan] = []
+			self._items[timespan] = []
 
 	def update(self, data):
 		for timespan, value in data.items():
 			try:
 				if isinstance(value, collections.Iterable):
-					self._avg[timespan].extend(value)
+					self._items[timespan].extend(value)
 				else:
-					self._avg[timespan].append(value)
+					self._items[timespan].append(value)
 			except Exception as e:
 				print(e)
 
@@ -571,10 +572,10 @@ class TimeSpanStats():
 				return None
 
 		if timespan is None:
-			return collections.OrderedDict((timespan, get_average(self._avg[timespan])) for timespan in self._timespan_list)
+			return collections.OrderedDict((timespan, get_average(self._items[timespan])) for timespan in self._timespan_list)
 		else:
 			try:
-				return get_average(self._avg[timespan])
+				return get_average(self._items[timespan])
 			except KeyError:
 				return None
 
@@ -586,10 +587,10 @@ class TimeSpanStats():
 				return None
 
 		if timespan is None:
-			return collections.OrderedDict((timespan, get_median(self._avg[timespan])) for timespan in self._timespan_list)
+			return collections.OrderedDict((timespan, get_median(self._items[timespan])) for timespan in self._timespan_list)
 		else:
 			try:
-				return get_median(self._avg[timespan])
+				return get_median(self._items[timespan])
 			except KeyError:
 				return None
 
@@ -601,15 +602,23 @@ class TimeSpanStats():
 				return None
 
 		if timespan is None:
-			return collections.OrderedDict((timespan, get_stdev(self._avg[timespan])) for timespan in self._timespan_list)
+			return collections.OrderedDict((timespan, get_stdev(self._items[timespan])) for timespan in self._timespan_list)
 		else:
 			try:
-				return get_stdev(self._avg[timespan])
+				return get_stdev(self._items[timespan])
 			except KeyError:
 				return None
 
 	def items(self):
-		return collections.OrderedDict((timespan, self._avg[timespan]) for timespan in self._timespan_list)
+		return collections.OrderedDict((timespan, self._items[timespan]) for timespan in self._timespan_list)
+
+	def __repr__(self):
+		return  "Class: {}\n".format(self.__class__) + \
+				"Timespan: {}\n".format(self._timespan) + \
+				"Items: {}\n".format(self._items) + \
+				"Average: {}\n".format(self.average()) + \
+				"Median: {}\n".format(self.median()) + \
+				"Stdev: {}".format(self.stdev())
 
 
 
