@@ -683,6 +683,8 @@ def display_dash(processed_data):
 					"avg_consistency_month: {}".format(processed_data['avg_consistency_month']),
 					"avg_size_month: {}".format(processed_data['avg_size_month']),
 					"consistency_month: {}".format(processed_data['consistency_month']),
+					"consistency_stats_month:\n{}\n".format(processed_data['consistency_stats_month']),
+					"size_stats_month:\n{}\n".format(processed_data['size_stats_month']),
 					"avg_consistency_week: {}".format(processed_data['avg_consistency_week']),
 					"avg_size_week: {}".format(processed_data['avg_size_week']),
 					"avg_consistency_weekday: {}".format(processed_data['avg_consistency_weekday']),
@@ -1003,8 +1005,8 @@ def display_dash(processed_data):
 					'data': [
 						{
 							'name': "Consistency",
-							'x': list(processed_data['avg_consistency_month'].keys()),
-							'y': list(processed_data['avg_consistency_month'].values()),
+							'x': list(processed_data['consistency_stats_month'].average().keys()),
+							'y': list(processed_data['consistency_stats_month'].average().values()),
 							'type': 'bar'
 						}
 					],
@@ -1030,8 +1032,8 @@ def display_dash(processed_data):
 					'data': [
 						{
 							'name': "Size",
-							'x': list(processed_data['avg_size_month'].keys()),
-							'y': list(processed_data['avg_size_month'].values()),
+							'x': list(processed_data['size_stats_month'].average().keys()),
+							'y': list(processed_data['size_stats_month'].average().values()),
 							'type': 'bar'
 						}
 					],
@@ -1138,18 +1140,19 @@ def process_file(filepath):
 	avg_size_month = TimeSpanAverage(timespan = TimeSpan.MONTH)
 	consistency_month = TimeSpanList(timespan = TimeSpan.MONTH)
 	consistency_stats_month = TimeSpanStats(timespan = TimeSpan.MONTH)
+	size_stats_month = TimeSpanStats(timespan = TimeSpan.MONTH)
 
-	logging.debug("items: {}".format(consistency_stats_month.items()))
+	# logging.debug("items: {}".format(consistency_stats_month.items()))
 	# logging.debug("average: {}".format(consistency_stats_month.average()))
 
-	consistency_stats_month.update(data={'Jan':1, 'Feb': [1,1,1,2], 'Mar': (1,2,6)})
+	# consistency_stats_month.update(data={'Jan':1, 'Feb': [1,1,1,2], 'Mar': (1,2,6)})
 
-	logging.debug("items: {}".format(consistency_stats_month.items()))
+	# logging.debug("items: {}".format(consistency_stats_month.items()))
 
-	logging.debug("average: {}".format(consistency_stats_month.average()))
-	logging.debug("median: {}".format(consistency_stats_month.median()))
-	logging.debug("stdev: {}".format(consistency_stats_month.stdev()))
-	logging.debug("feb stdev: {}".format(consistency_stats_month.stdev(timespan='Feb')))
+	# logging.debug("average: {}".format(consistency_stats_month.average()))
+	# logging.debug("median: {}".format(consistency_stats_month.median()))
+	# logging.debug("stdev: {}".format(consistency_stats_month.stdev()))
+	# logging.debug("feb stdev: {}".format(consistency_stats_month.stdev(timespan='Feb')))
 
 
 
@@ -1180,6 +1183,8 @@ def process_file(filepath):
 		avg_consistency_month.update({entry["month_str"]: consistency_value})
 		avg_size_month.update({entry["month_str"]: size_value})
 		consistency_month.update({entry["month_str"]: consistency_value})
+		consistency_stats_month.update({entry["month_str"]: consistency_value})
+		size_stats_month.update({entry["month_str"]: size_value})
 
 		avg_consistency_week.update({entry["weeknum"]: consistency_value})
 		avg_size_week.update({entry["weeknum"]: size_value})
@@ -1202,6 +1207,8 @@ def process_file(filepath):
 	logging.debug("avg_consistency_month: {}".format(avg_consistency_month.result()))
 	logging.debug("avg_size_month: {}".format(avg_size_month.result()))
 	logging.debug("consistency_month: {}".format(consistency_month.result()))
+	logging.debug("consistency_stats_month:\n{}\n".format(consistency_stats_month))
+	logging.debug("size_stats_month:\n{}\n".format(size_stats_month))
 	logging.debug("avg_consistency_week: {}".format(avg_consistency_week.result()))
 	logging.debug("avg_size_week: {}".format(avg_size_week.result()))
 	logging.debug("avg_consistency_weekday: {}".format(avg_consistency_weekday.result()))
@@ -1218,6 +1225,8 @@ def process_file(filepath):
 	processed_data["avg_consistency_month"] = avg_consistency_month.result()
 	processed_data["avg_size_month"] = avg_size_month.result()
 	processed_data["consistency_month"] = consistency_month.result()
+	processed_data["consistency_stats_month"] = consistency_stats_month
+	processed_data["size_stats_month"] = size_stats_month
 	processed_data["avg_consistency_week"] = avg_consistency_week.result()
 	processed_data["avg_size_week"] = avg_size_week.result()
 	processed_data["avg_consistency_weekday"] = avg_consistency_weekday.result()
