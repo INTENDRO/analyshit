@@ -32,6 +32,9 @@ import dash_daq as daq
 import dash_core_components as dcc
 import dash_html_components as html
 
+# Profiler
+from guppy import hpy
+
 
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
@@ -1262,6 +1265,8 @@ def main():
 
 	print("\n\n")
 	display_dash(processed_data)
+	# h = hpy()
+	# print(h.heap())
 	app.run_server(debug=True, host="0.0.0.0")
 
 
