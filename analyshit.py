@@ -609,8 +609,14 @@ class TimeSpanStats():
 			except KeyError:
 				return None
 
-	def items(self):
-		return collections.OrderedDict((timespan, self._items[timespan]) for timespan in self._timespan_list)
+	def items(self, timespan=None):
+		if timespan is None:
+			return collections.OrderedDict((timespan, self._items[timespan]) for timespan in self._timespan_list)
+		else:
+			try:
+				return self._items[timespan]
+			except KeyError:
+				return None
 
 	def __repr__(self):
 		return  "Class: {}\n".format(self.__class__) + \
@@ -680,17 +686,14 @@ def display_dash(processed_data):
 					"cnt_size: {}".format(processed_data['cnt_size']),
 					"cnt_type: {}".format(processed_data['cnt_type']),
 					"cnt_sittings_date: {}".format(processed_data['cnt_sittings_date']),
-					"avg_consistency_month: {}".format(processed_data['avg_consistency_month']),
-					"avg_size_month: {}".format(processed_data['avg_size_month']),
-					"consistency_month: {}".format(processed_data['consistency_month']),
 					"consistency_stats_month:\n{}\n".format(processed_data['consistency_stats_month']),
 					"size_stats_month:\n{}\n".format(processed_data['size_stats_month']),
-					"avg_consistency_week: {}".format(processed_data['avg_consistency_week']),
-					"avg_size_week: {}".format(processed_data['avg_size_week']),
-					"avg_consistency_weekday: {}".format(processed_data['avg_consistency_weekday']),
-					"avg_size_weekday: {}".format(processed_data['avg_size_weekday']),
-					# "avg_consistency_date: {}".format(processed_data['avg_consistency_date']),
-					# "avg_size_date: {}".format(processed_data['avg_size_date'])
+					"consistency_stats_week:\n{}\n".format(processed_data['consistency_stats_week']),
+					"size_stats_week:\n{}\n".format(processed_data['size_stats_week']),
+					"consistency_stats_weekday:\n{}\n".format(processed_data['consistency_stats_weekday']),
+					"size_stats_weekday:\n{}\n".format(processed_data['size_stats_weekday']),
+					# "consistency_stats_date:\n{}\n".format(processed_data['consistency_stats_date']),
+					# "size_stats_date:\n{}\n".format(processed_data['size_stats_date']),
 				]),
 				cols= 100,
 				rows=50
@@ -801,7 +804,7 @@ def display_dash(processed_data):
 				figure={
 					'data': [
 						{
-							'y': list(processed_data['avg_consistency_weekday'].values()),
+							'y': list(processed_data['consistency_stats_weekday'].average().values()),
 							'type': 'bar'
 						},
 					],
@@ -810,7 +813,7 @@ def display_dash(processed_data):
 						'xaxis': {
 							'title': 'Weekday',
 							'tickvals': [0,1,2,3,4,5,6],
-							'ticktext': list(processed_data['avg_consistency_weekday'].keys())
+							'ticktext': list(processed_data['consistency_stats_weekday'].average().keys())
 						},
 						'yaxis': {
 							'title': 'Consistency',
@@ -831,7 +834,7 @@ def display_dash(processed_data):
 				figure={
 					'data': [
 						{
-							'y': list(processed_data['avg_size_weekday'].values()),
+							'y': list(processed_data['size_stats_weekday'].average().values()),
 							'type': 'bar'
 						},
 					],
@@ -840,7 +843,7 @@ def display_dash(processed_data):
 						'xaxis': {
 							'title': 'Weekday',
 							'tickvals': [0,1,2,3,4,5,6],
-							'ticktext': list(processed_data['avg_size_weekday'].keys())
+							'ticktext': list(processed_data['size_stats_weekday'].average().keys())
 						},
 						'yaxis': {
 							'title': 'Size',
@@ -862,12 +865,12 @@ def display_dash(processed_data):
 					'data': [
 						{
 							'name': "Consistency",
-							'y': list(processed_data['avg_consistency_weekday'].values()),
+							'y': list(processed_data['consistency_stats_weekday'].average().values()),
 							'type': 'bar'
 						},
 						{
 							'name': "Size",
-							'y': list(processed_data['avg_size_weekday'].values()),
+							'y': list(processed_data['size_stats_weekday'].average().values()),
 							'type': 'bar'
 						}
 					],
@@ -876,7 +879,7 @@ def display_dash(processed_data):
 						'xaxis': {
 							'title': 'Weekday',
 							'tickvals': [0,1,2,3,4,5,6],
-							'ticktext': list(processed_data['avg_size_weekday'].keys())
+							'ticktext': list(processed_data['size_stats_weekday'].average().keys())
 						},
 						'yaxis': {
 							'range':[1,4]
@@ -896,7 +899,7 @@ def display_dash(processed_data):
 						dict(
 							x=list(range(1,32)),
 							y=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-							z=create_heatmap_matrix(processed_data['avg_consistency_date']),
+							z=create_heatmap_matrix(processed_data['consistency_stats_date'].average()),
 							xgap=1,
 							ygap=1,
 							colorscale='Reds',
@@ -924,7 +927,7 @@ def display_dash(processed_data):
 						dict(
 							x=list(range(1,32)),
 							y=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-							z=create_heatmap_matrix(processed_data['avg_size_date']),
+							z=create_heatmap_matrix(processed_data['size_stats_date'].average()),
 							xgap=1,
 							ygap=1,
 							colorscale='Reds',
@@ -951,8 +954,8 @@ def display_dash(processed_data):
 					'data': [
 						{
 							'name': "Consistency",
-							'x': list(processed_data['avg_consistency_week'].keys()),
-							'y': list(processed_data['avg_consistency_week'].values()),
+							'x': list(processed_data['consistency_stats_week'].average().keys()),
+							'y': list(processed_data['consistency_stats_week'].average().values()),
 							'type': 'bar'
 						}
 					],
@@ -978,8 +981,8 @@ def display_dash(processed_data):
 					'data': [
 						{
 							'name': "Size",
-							'x': list(processed_data['avg_size_week'].keys()),
-							'y': list(processed_data['avg_size_week'].values()),
+							'x': list(processed_data['size_stats_week'].average().keys()),
+							'y': list(processed_data['size_stats_week'].average().values()),
 							'type': 'bar'
 						}
 					],
@@ -1060,7 +1063,7 @@ def display_dash(processed_data):
 						{
 							'name': "Consistency",
 							'x': 'Jan',
-							'y': processed_data['consistency_month']['Jan'],
+							'y': processed_data['consistency_stats_month'].items(timespan='Jan'),
 							'type': 'box'
 						}
 					],
@@ -1136,38 +1139,20 @@ def process_file(filepath):
 	cnt_type = collections.Counter()
 
 	# month stats
-	avg_consistency_month = TimeSpanAverage(timespan = TimeSpan.MONTH)
-	avg_size_month = TimeSpanAverage(timespan = TimeSpan.MONTH)
-	consistency_month = TimeSpanList(timespan = TimeSpan.MONTH)
 	consistency_stats_month = TimeSpanStats(timespan = TimeSpan.MONTH)
 	size_stats_month = TimeSpanStats(timespan = TimeSpan.MONTH)
 
-	# logging.debug("items: {}".format(consistency_stats_month.items()))
-	# logging.debug("average: {}".format(consistency_stats_month.average()))
-
-	# consistency_stats_month.update(data={'Jan':1, 'Feb': [1,1,1,2], 'Mar': (1,2,6)})
-
-	# logging.debug("items: {}".format(consistency_stats_month.items()))
-
-	# logging.debug("average: {}".format(consistency_stats_month.average()))
-	# logging.debug("median: {}".format(consistency_stats_month.median()))
-	# logging.debug("stdev: {}".format(consistency_stats_month.stdev()))
-	# logging.debug("feb stdev: {}".format(consistency_stats_month.stdev(timespan='Feb')))
-
-
-
-
 	# week stats
-	avg_consistency_week = TimeSpanAverage(timespan = TimeSpan.WEEK)
-	avg_size_week = TimeSpanAverage(timespan = TimeSpan.WEEK)
+	consistency_stats_week = TimeSpanStats(timespan = TimeSpan.WEEK)
+	size_stats_week = TimeSpanStats(timespan = TimeSpan.WEEK)
 
 	# weekday stats
-	avg_consistency_weekday = TimeSpanAverage(timespan = TimeSpan.WEEKDAY)
-	avg_size_weekday = TimeSpanAverage(timespan = TimeSpan.WEEKDAY)
+	consistency_stats_weekday = TimeSpanStats(timespan = TimeSpan.WEEKDAY)
+	size_stats_weekday = TimeSpanStats(timespan = TimeSpan.WEEKDAY)
 
 	# date stats
-	avg_consistency_date = TimeSpanAverage(timespan = TimeSpan.DATE)
-	avg_size_date = TimeSpanAverage(timespan = TimeSpan.DATE)
+	consistency_stats_date = TimeSpanStats(timespan = TimeSpan.DATE)
+	size_stats_date = TimeSpanStats(timespan = TimeSpan.DATE)
 
 
 	for entry in parse_line(filepath):
@@ -1180,20 +1165,17 @@ def process_file(filepath):
 		consistency_value = CONSISTENCY_STR2NUM[entry["consistency"]]
 		size_value = SIZE_STR2NUM[entry["size"]]
 
-		avg_consistency_month.update({entry["month_str"]: consistency_value})
-		avg_size_month.update({entry["month_str"]: size_value})
-		consistency_month.update({entry["month_str"]: consistency_value})
 		consistency_stats_month.update({entry["month_str"]: consistency_value})
 		size_stats_month.update({entry["month_str"]: size_value})
 
-		avg_consistency_week.update({entry["weeknum"]: consistency_value})
-		avg_size_week.update({entry["weeknum"]: size_value})
+		consistency_stats_week.update({entry["weeknum"]: consistency_value})
+		size_stats_week.update({entry["weeknum"]: size_value})
 
-		avg_consistency_weekday.update({entry["weekday"]: consistency_value})
-		avg_size_weekday.update({entry["weekday"]: size_value})
+		consistency_stats_weekday.update({entry["weekday"]: consistency_value})
+		size_stats_weekday.update({entry["weekday"]: size_value})
 
-		avg_consistency_date.update({entry["date"]: consistency_value})
-		avg_size_date.update({entry["date"]: size_value})
+		consistency_stats_date.update({entry["date"]: consistency_value})
+		size_stats_date.update({entry["date"]: size_value})
 
 
 	# convert the weekday counter to an ordered counter using the conventional order of weekdays starting on monday
@@ -1204,17 +1186,14 @@ def process_file(filepath):
 	logging.debug("cnt_size: {}".format(cnt_size))
 	logging.debug("cnt_type: {}".format(cnt_type))
 	logging.debug("cnt_sittings_date: {}".format(cnt_sittings_date))
-	logging.debug("avg_consistency_month: {}".format(avg_consistency_month.result()))
-	logging.debug("avg_size_month: {}".format(avg_size_month.result()))
-	logging.debug("consistency_month: {}".format(consistency_month.result()))
 	logging.debug("consistency_stats_month:\n{}\n".format(consistency_stats_month))
 	logging.debug("size_stats_month:\n{}\n".format(size_stats_month))
-	logging.debug("avg_consistency_week: {}".format(avg_consistency_week.result()))
-	logging.debug("avg_size_week: {}".format(avg_size_week.result()))
-	logging.debug("avg_consistency_weekday: {}".format(avg_consistency_weekday.result()))
-	logging.debug("avg_size_weekday: {}".format(avg_size_weekday.result()))
-	logging.debug("avg_consistency_date: {}".format(avg_consistency_date.result()))
-	logging.debug("avg_size_date: {}".format(avg_size_date.result()))
+	logging.debug("consistency_stats_week:\n{}\n".format(consistency_stats_week))
+	logging.debug("size_stats_week:\n{}\n".format(size_stats_week))
+	logging.debug("consistency_stats_weekday:\n{}\n".format(consistency_stats_weekday))
+	logging.debug("size_stats_weekday:\n{}\n".format(size_stats_weekday))
+	logging.debug("consistency_stats_date:\n{}\n".format(consistency_stats_date))
+	logging.debug("size_stats_date:\n{}\n".format(size_stats_date))
 
 
 	processed_data["cnt_type"] = cnt_type
@@ -1222,17 +1201,14 @@ def process_file(filepath):
 	processed_data["cnt_consistency"] = cnt_consistency
 	processed_data["cnt_sittings_weekday"] = cnt_sittings_weekday
 	processed_data["cnt_sittings_date"] = cnt_sittings_date
-	processed_data["avg_consistency_month"] = avg_consistency_month.result()
-	processed_data["avg_size_month"] = avg_size_month.result()
-	processed_data["consistency_month"] = consistency_month.result()
 	processed_data["consistency_stats_month"] = consistency_stats_month
 	processed_data["size_stats_month"] = size_stats_month
-	processed_data["avg_consistency_week"] = avg_consistency_week.result()
-	processed_data["avg_size_week"] = avg_size_week.result()
-	processed_data["avg_consistency_weekday"] = avg_consistency_weekday.result()
-	processed_data["avg_size_weekday"] = avg_size_weekday.result()
-	processed_data["avg_consistency_date"] = avg_consistency_date.result()
-	processed_data["avg_size_date"] = avg_size_date.result()
+	processed_data["consistency_stats_week"] = consistency_stats_week
+	processed_data["size_stats_week"] = size_stats_week
+	processed_data["consistency_stats_weekday"] = consistency_stats_weekday
+	processed_data["size_stats_weekday"] = size_stats_weekday
+	processed_data["consistency_stats_date"] = consistency_stats_date
+	processed_data["size_stats_date"] = size_stats_date
 
 
 
