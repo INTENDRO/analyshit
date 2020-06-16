@@ -9,17 +9,9 @@ import dash_html_components as html
 
 from app import app
 
-layout = html.Div([
-	html.H3('App 1'),
-	dcc.Dropdown(
-		id='app-1-dropdown',
-		options=[
-			{'label': 'App 1 - {}'.format(i), 'value': i} for i in [
-			'NYC', 'MTL', 'LA'
-			]
-		]
-	),
-])
+import datetime
+import logging
+
 
 
 
@@ -64,12 +56,10 @@ def display_dash(processed_data):
 		'fontSize': '24px',
 	}
 
-	app.layout = html.Div([
+	return [
 		dcc.Location(id='url', refresh=False),
 
-		dcc.Link('Navigate to "/"', href='/'),
-		html.Br(),
-		dcc.Link('Navigate to "/page-2"', href='/page-2'),
+		dcc.Link('View debug information', href='/debug'),
 		
 		html.H1(
 			children='Analyshit',
@@ -77,28 +67,6 @@ def display_dash(processed_data):
 				'textAlign': 'center',
 				'fontSize': '64px'
 			}
-		),
-		html.Div(
-			html.Textarea("\n".join([
-					"average_consistency: {}".format(processed_data['average_consistency']),
-					"average_size: {}".format(processed_data['average_size']),
-					"cnt_sittings_weekday: {}".format(processed_data['cnt_sittings_weekday']),
-					"cnt_consistency: {}".format(processed_data['cnt_consistency']),
-					"cnt_size: {}".format(processed_data['cnt_size']),
-					"cnt_type: {}".format(processed_data['cnt_type']),
-					"cnt_sittings_date: {}".format(processed_data['cnt_sittings_date']),
-					"consistency_stats_month:\n{}\n".format(processed_data['consistency_stats_month']),
-					"size_stats_month:\n{}\n".format(processed_data['size_stats_month']),
-					"consistency_stats_week:\n{}\n".format(processed_data['consistency_stats_week']),
-					"size_stats_week:\n{}\n".format(processed_data['size_stats_week']),
-					"consistency_stats_weekday:\n{}\n".format(processed_data['consistency_stats_weekday']),
-					"size_stats_weekday:\n{}\n".format(processed_data['size_stats_weekday']),
-					# "consistency_stats_date:\n{}\n".format(processed_data['consistency_stats_date']),
-					# "size_stats_date:\n{}\n".format(processed_data['size_stats_date']),
-				]),
-				cols= 100,
-				rows=50
-			)
 		),
 
 		html.Div([
@@ -424,7 +392,7 @@ def display_dash(processed_data):
 				)
 			])
 		]),
-	])
+	]
 
 
 

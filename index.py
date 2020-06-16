@@ -21,7 +21,7 @@ from dash.dependencies import Input, Output
 
 
 from app import app
-from apps import app1
+from apps import root_app, debug_app
 
 
 # General
@@ -51,11 +51,15 @@ app.layout = html.Div([
 @app.callback(	Output('page-content', 'children'),
 				[Input('url', 'pathname')])
 def display_page(pathname):
-	if pathname == '/apps/app1':
-		return app1.layout
+	if pathname == '/':
+		return root_app.display_dash(processed_data)
+	if pathname == '/debug':
+		return debug_app.display_dash(processed_data)
 	else:
 		return '404'
 
+
+processed_data = {}
 
 
 CONSISTENCY_STR2NUM = {'d': 1, 'w': 2, 'n': 3, 'h': 4}
@@ -692,6 +696,8 @@ def parse_line(filepath):
 
 
 def process_file(filepath):
+	global processed_data
+
 	logging.debug("processing file {}".format(filepath))
 	processed_data = {}
 
@@ -789,7 +795,7 @@ def process_file(filepath):
 
 	processed_data["average_size"] = avg_size
 
-	return processed_data
+	# return processed_data
 
 
 def main():
@@ -817,7 +823,7 @@ def main():
 		sys.exit(-1)
 	logging.debug("file exists!")
 
-	processed_data = process_file(filepath)
+	process_file(filepath)
 	logging.debug("Keys of processed_data dict: {}".format(processed_data.keys()))
 
 
