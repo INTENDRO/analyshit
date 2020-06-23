@@ -1,4 +1,11 @@
+"""
+root_app.py
 
+This file is responsible for creating the layout for the main page.
+All stats will be displayed on this page as tabs are used to 
+switch between different categories instead of changing the page,
+which would require another application.
+"""
 
 # Dash
 import dash

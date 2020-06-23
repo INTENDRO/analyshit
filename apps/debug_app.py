@@ -1,3 +1,11 @@
+"""
+debug_app.py
+
+Debug application to display all values in the dictionary "processed_data".
+The contained data will be displayed in a textbox on an otherwise empty page.
+"""
+
+
 # Dash
 import dash
 import dash_daq as daq
