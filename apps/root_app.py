@@ -77,6 +77,25 @@ def display_dash(processed_data):
 		),
 
 		html.Div([
+			html.Div([
+				html.Div([
+					" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lacinia orci quam, sit amet posuere dolor ultricies vel. Aenean in sem dapibus metus dictum faucibus quis quis tortor. Vivamus vulputate elit vel maximus pellentesque. Quisque a diam dignissim, pulvinar mi eu, tempus sapien. Phasellus lectus diam, consectetur id est ac, fermentum tristique ipsum. Nam imperdiet metus erat, non tempor justo rhoncus id. Nam ullamcorper elit eget neque aliquam placerat. ",
+					html.A(
+						children="Go to google",
+						href="https://google.com",
+						className='btn btn-primary'
+					)
+				],
+				className='card-body'
+				),
+			],
+			className='card'
+			),
+		],
+		className='container'
+		),
+
+		html.Div([
 			html.Label("Avg. Consistency: {:.3f}".format(processed_data["average_consistency"]), style=avg_count_style),
 			html.Label("Avg. Size: {:.3f}".format(processed_data["average_size"]), style=avg_count_style),
 			html.Label("Glück Count: {}".format(processed_data["cnt_type"]["glück"]), style=avg_count_style),
