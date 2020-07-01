@@ -14,13 +14,14 @@ import dash_html_components as html
 
 
 from app import app
+from .app_common import navbar
 
 
 
 def display_dash(processed_data):
 	return [
 		dcc.Location(id='url', refresh=False),
-		dcc.Link('Go to main page', href='/'),
+		navbar,
 		html.Br(),
 		dcc.Textarea(
 			id="debug-information",

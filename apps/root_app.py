@@ -16,6 +16,7 @@ import dash_bootstrap_components as dbc
 
 
 from app import app
+from .app_common import navbar
 
 import datetime
 import logging
@@ -67,13 +68,7 @@ def display_dash(processed_data):
 	return [
 		dcc.Location(id='url', refresh=False),
 
-		dbc.NavbarSimple(brand='Analyshit', brand_href='#', color='primary', dark=True,
-		children=[
-			dbc.NavItem(dbc.NavLink("Home", href='/')),
-			dbc.NavItem(dbc.NavLink("Debug", href='/debug')),
-			dbc.NavItem(dbc.NavLink("Google", href='https://google.com'))
-
-		]),
+		navbar,
 
 		
 		html.H1(
