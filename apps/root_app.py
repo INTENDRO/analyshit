@@ -12,6 +12,7 @@ import dash
 import dash_daq as daq
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 
 
 from app import app
@@ -66,47 +67,14 @@ def display_dash(processed_data):
 	return [
 		dcc.Location(id='url', refresh=False),
 
-		html.Nav([
-			html.A(children='Analyshit', className='navbar-brand', href='/'),
+		dbc.NavbarSimple(brand='Analyshit', brand_href='#', color='primary', dark=True,
+		children=[
+			dbc.NavItem(dbc.NavLink("Home", href='/')),
+			dbc.NavItem(dbc.NavLink("Debug", href='/debug')),
+			dbc.NavItem(dbc.NavLink("Google", href='https://google.com'))
 
-			html.Button([
-			],
-			className='navbar-toggler',
-			type='button',
-			**{
-			'data-toggle':'collapse',
-			'data-target':'#navbarSupportedContent',
-			'aria-controls':'navbarSupportedContent',
-			'aria-expanded':'false',
-			'aria-label':'Toggle navigation'
-			}
-			),
+		]),
 
-			html.Div([
-				html.Ul([
-					html.Li([
-						html.A(children='Debug', className='nav-link', href='/debug'),
-					],
-					className='nav-item'
-					),
-					html.Li([
-						html.A(children='Google', className='nav-link', href='https://google.com'),
-					],
-					className='nav-item'
-					)
-				],
-				className='navbar-nav'
-				)
-			],
-			className='collapse navbar-collapse',
-			id='navbarSupportedContent'
-			)
-
-				
-
-		],
-		className='navbar navbar-expand-lg navbar-dark bg-dark'
-		),
 		
 		html.H1(
 			children='Analyshit',
