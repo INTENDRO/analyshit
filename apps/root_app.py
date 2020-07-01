@@ -66,7 +66,47 @@ def display_dash(processed_data):
 	return [
 		dcc.Location(id='url', refresh=False),
 
-		dcc.Link('View debug information', href='/debug'),
+		html.Nav([
+			html.A(children='Analyshit', className='navbar-brand', href='/'),
+
+			html.Button([
+			],
+			className='navbar-toggler',
+			type='button',
+			**{
+			'data-toggle':'collapse',
+			'data-target':'#navbarSupportedContent',
+			'aria-controls':'navbarSupportedContent',
+			'aria-expanded':'false',
+			'aria-label':'Toggle navigation'
+			}
+			),
+
+			html.Div([
+				html.Ul([
+					html.Li([
+						html.A(children='Debug', className='nav-link', href='/debug'),
+					],
+					className='nav-item'
+					),
+					html.Li([
+						html.A(children='Google', className='nav-link', href='https://google.com'),
+					],
+					className='nav-item'
+					)
+				],
+				className='navbar-nav'
+				)
+			],
+			className='collapse navbar-collapse',
+			id='navbarSupportedContent'
+			)
+
+				
+
+		],
+		className='navbar navbar-expand-lg navbar-dark bg-dark'
+		),
 		
 		html.H1(
 			children='Analyshit',
@@ -74,25 +114,6 @@ def display_dash(processed_data):
 				'textAlign': 'center',
 				'fontSize': '64px'
 			}
-		),
-
-		html.Div([
-			html.Div([
-				html.Div([
-					" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lacinia orci quam, sit amet posuere dolor ultricies vel. Aenean in sem dapibus metus dictum faucibus quis quis tortor. Vivamus vulputate elit vel maximus pellentesque. Quisque a diam dignissim, pulvinar mi eu, tempus sapien. Phasellus lectus diam, consectetur id est ac, fermentum tristique ipsum. Nam imperdiet metus erat, non tempor justo rhoncus id. Nam ullamcorper elit eget neque aliquam placerat. ",
-					html.A(
-						children="Go to google",
-						href="https://google.com",
-						className='btn btn-primary'
-					)
-				],
-				className='card-body'
-				),
-			],
-			className='card'
-			),
-		],
-		className='container'
 		),
 
 		html.Div([

@@ -44,4 +44,14 @@ external_scripts = [
 	# Materialize
 	# "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"
 ]
-app = dash.Dash(__name__, external_scripts=external_scripts, external_stylesheets=external_stylesheets)
+
+
+# Bootstrap is developed mobile-first. In order to support responsive rendering and touch zooming,
+# this meta tag needs to be included:
+# <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+# Meta tags can be added using a dictionary with the main Dash constructor
+
+# does not work for some reason...
+# meta_tags = {'name': 'viewport', 'content': 'width=device-width, initial-scale=1, shrink-to-fit=no'}
+
+app = dash.Dash(__name__, external_scripts=external_scripts, external_stylesheets=external_stylesheets) #, meta_tags=meta_tags)
