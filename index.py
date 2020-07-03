@@ -21,7 +21,7 @@ from dash.dependencies import Input, Output
 
 
 from app import app
-from apps import root_app, debug_app
+from apps import home_app, timespan_app, debug_app
 
 
 # General
@@ -53,8 +53,10 @@ app.layout = html.Div([
 				[Input('url', 'pathname')])
 def display_page(pathname):
 	if pathname == '/':
-		return root_app.display_dash(processed_data)
-	if pathname == '/debug':
+		return home_app.display_dash(processed_data)
+	elif pathname == '/timespan':
+		return timespan_app.display_dash(processed_data)
+	elif pathname == '/debug':
 		return debug_app.display_dash(processed_data)
 	else:
 		return '404'
