@@ -70,15 +70,6 @@ def display_dash(processed_data):
 
 		navbar,
 
-		
-		html.H1(
-			children='Analyshit',
-			style={
-				'textAlign': 'center',
-				'fontSize': '64px'
-			}
-		),
-
 		html.Div([
 			html.Label("Avg. Consistency: {:.3f}".format(processed_data["average_consistency"]), style=avg_count_style),
 			html.Label("Avg. Size: {:.3f}".format(processed_data["average_size"]), style=avg_count_style),
