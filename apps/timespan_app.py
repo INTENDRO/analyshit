@@ -21,197 +21,211 @@ def display_dash(processed_data):
 
 		navbar,
 
-		dcc.Tabs([
-			dcc.Tab(label='Weekday', children=[
-				dcc.Graph(
-					id='weekday-count-bar',
-					figure={
-						'data': [
-							{
-								'y': list(processed_data['cnt_sittings_weekday'].values()),
-								'type': 'bar'
-							},
-						],
-						'layout': {
-							'title': 'Amount of Individual Sittings per Weekday',
-							'xaxis': {
-								'title': 'Weekday',
-								'tickvals': [0,1,2,3,4,5,6],
-								'ticktext': list(processed_data['cnt_sittings_weekday'].keys())
+		dbc.Tabs([
+			dbc.Tab(label='Weekday', children=[
+				html.Div([
+					dcc.Graph(
+						id='weekday-count-bar',
+						style={'height':'40vh'},
+						figure={
+							'data': [
+								{
+									'y': list(processed_data['cnt_sittings_weekday'].values()),
+									'type': 'bar'
+								},
+							],
+							'layout': {
+								'title': 'Amount of Individual Sittings per Weekday',
+								'xaxis': {
+									'title': 'Weekday',
+									'tickvals': [0,1,2,3,4,5,6],
+									'ticktext': list(processed_data['cnt_sittings_weekday'].keys())
+								}
 							}
 						}
-					}
-				),
-				dcc.Graph(
-					id='avg-consistency-weekday-bar',
-					figure={
-						'data': [
-							{
-								'y': list(processed_data['consistency_stats_weekday'].average().values()),
-								'type': 'bar'
-							},
-						],
-						'layout': {
-							'title': 'Average Consistency vs. Weekday',
-							'xaxis': {
-								'title': 'Weekday',
-								'tickvals': [0,1,2,3,4,5,6],
-								'ticktext': list(processed_data['consistency_stats_weekday'].average().keys())
-							},
-							'yaxis': {
-								'title': 'Consistency',
-								'tickvals': [1,2,3,4],
-								'ticktext': ['d','w','n','h'],
-								'range':[1,4]
+					),
+					dcc.Graph(
+						id='avg-consistency-weekday-bar',
+						style={'height':'40vh'},
+						figure={
+							'data': [
+								{
+									'y': list(processed_data['consistency_stats_weekday'].average().values()),
+									'type': 'bar'
+								},
+							],
+							'layout': {
+								'title': 'Average Consistency vs. Weekday',
+								'xaxis': {
+									'title': 'Weekday',
+									'tickvals': [0,1,2,3,4,5,6],
+									'ticktext': list(processed_data['consistency_stats_weekday'].average().keys())
+								},
+								'yaxis': {
+									'title': 'Consistency',
+									'tickvals': [1,2,3,4],
+									'ticktext': ['d','w','n','h'],
+									'range':[1,4]
+								}
 							}
 						}
-					}
-				),
-				dcc.Graph(
-					id='avg-size-weekday-bar',
-					figure={
-						'data': [
-							{
-								'y': list(processed_data['size_stats_weekday'].average().values()),
-								'type': 'bar'
-							},
-						],
-						'layout': {
-							'title': 'Average Size vs. Weekday',
-							'xaxis': {
-								'title': 'Weekday',
-								'tickvals': [0,1,2,3,4,5,6],
-								'ticktext': list(processed_data['size_stats_weekday'].average().keys())
-							},
-							'yaxis': {
-								'title': 'Size',
-								'tickvals': [1,2,3],
-								'ticktext': ['w','n','g'],
-								'range':[1,3]
+					),
+					dcc.Graph(
+						id='avg-size-weekday-bar',
+						style={'height':'40vh'},
+						figure={
+							'data': [
+								{
+									'y': list(processed_data['size_stats_weekday'].average().values()),
+									'type': 'bar'
+								},
+							],
+							'layout': {
+								'title': 'Average Size vs. Weekday',
+								'xaxis': {
+									'title': 'Weekday',
+									'tickvals': [0,1,2,3,4,5,6],
+									'ticktext': list(processed_data['size_stats_weekday'].average().keys())
+								},
+								'yaxis': {
+									'title': 'Size',
+									'tickvals': [1,2,3],
+									'ticktext': ['w','n','g'],
+									'range':[1,3]
+								}
 							}
 						}
-					}
-				),
-				dcc.Graph(
-					id='avg-consistency-size-weekday-bar',
-					figure={
-						'data': [
-							{
-								'name': "Consistency",
-								'y': list(processed_data['consistency_stats_weekday'].average().values()),
-								'type': 'bar'
-							},
-							{
-								'name': "Size",
-								'y': list(processed_data['size_stats_weekday'].average().values()),
-								'type': 'bar'
-							}
-						],
-						'layout': {
-							'title': 'Average Values vs. Weekday',
-							'xaxis': {
-								'title': 'Weekday',
-								'tickvals': [0,1,2,3,4,5,6],
-								'ticktext': list(processed_data['size_stats_weekday'].average().keys())
-							},
-							'yaxis': {
-								'range':[1,4]
+					),
+					dcc.Graph(
+						id='avg-consistency-size-weekday-bar',
+						style={'height':'40vh'},
+						figure={
+							'data': [
+								{
+									'name': "Consistency",
+									'y': list(processed_data['consistency_stats_weekday'].average().values()),
+									'type': 'bar'
+								},
+								{
+									'name': "Size",
+									'y': list(processed_data['size_stats_weekday'].average().values()),
+									'type': 'bar'
+								}
+							],
+							'layout': {
+								'title': 'Average Values vs. Weekday',
+								'xaxis': {
+									'title': 'Weekday',
+									'tickvals': [0,1,2,3,4,5,6],
+									'ticktext': list(processed_data['size_stats_weekday'].average().keys())
+								},
+								'yaxis': {
+									'range':[1,4]
+								}
 							}
 						}
-					}
-				)
+					)
+				])
 			]),
-			dcc.Tab(label='Week', children=[
-				dcc.Graph(
-					id='avg-consistency-week-bar',
-					figure={
-						'data': [
-							{
-								'name': "Consistency",
-								'x': list(processed_data['consistency_stats_week'].average().keys()),
-								'y': list(processed_data['consistency_stats_week'].average().values()),
-								'type': 'bar'
-							}
-						],
-						'layout': {
-							'title': 'Average Consistency vs. Week',
-							'xaxis': {
-								'title': 'Week',
-							},
-							'yaxis': {
-								'range':[1,4]
-							}
-						}
-					}
-				),
-				dcc.Graph(
-					id='avg-size-week-bar',
-					figure={
-						'data': [
-							{
-								'name': "Size",
-								'x': list(processed_data['size_stats_week'].average().keys()),
-								'y': list(processed_data['size_stats_week'].average().values()),
-								'type': 'bar'
-							}
-						],
-						'layout': {
-							'title': 'Average Size vs. Week',
-							'xaxis': {
-								'title': 'Week',
-							},
-							'yaxis': {
-								'range':[1,3]
+			dbc.Tab(label='Week', children=[
+				html.Div([
+					dcc.Graph(
+						id='avg-consistency-week-bar',
+						style={'height':'40vh'},
+						figure={
+							'data': [
+								{
+									'name': "Consistency",
+									'x': list(processed_data['consistency_stats_week'].average().keys()),
+									'y': list(processed_data['consistency_stats_week'].average().values()),
+									'type': 'bar'
+								}
+							],
+							'layout': {
+								'title': 'Average Consistency vs. Week',
+								'xaxis': {
+									'title': 'Week',
+								},
+								'yaxis': {
+									'range':[1,4]
+								}
 							}
 						}
-					}
-				)
+					),
+					dcc.Graph(
+						id='avg-size-week-bar',
+						style={'height':'40vh'},
+						figure={
+							'data': [
+								{
+									'name': "Size",
+									'x': list(processed_data['size_stats_week'].average().keys()),
+									'y': list(processed_data['size_stats_week'].average().values()),
+									'type': 'bar'
+								}
+							],
+							'layout': {
+								'title': 'Average Size vs. Week',
+								'xaxis': {
+									'title': 'Week',
+								},
+								'yaxis': {
+									'range':[1,3]
+								}
+							}
+						}
+					)
+				])
 			]),
-			dcc.Tab(label='Month', children = [
-				dcc.Graph(
-					id='avg-consistency-month-bar',
-					figure={
-						'data': [
-							{
-								'name': "Consistency",
-								'x': list(processed_data['consistency_stats_month'].average().keys()),
-								'y': list(processed_data['consistency_stats_month'].average().values()),
-								'type': 'bar'
-							}
-						],
-						'layout': {
-							'title': 'Average Consistency vs. Month',
-							'xaxis': {
-								'title': 'Month',
-							},
-							'yaxis': {
-								'range':[1,4]
-							}
-						}
-					}
-				),
-				dcc.Graph(
-					id='avg-size-month-bar',
-					figure={
-						'data': [
-							{
-								'name': "Size",
-								'x': list(processed_data['size_stats_month'].average().keys()),
-								'y': list(processed_data['size_stats_month'].average().values()),
-								'type': 'bar'
-							}
-						],
-						'layout': {
-							'title': 'Average Size vs. Month',
-							'xaxis': {
-								'title': 'Month',
-							},
-							'yaxis': {
-								'range':[1,3]
+			dbc.Tab(label='Month', children = [
+				html.Div([
+					dcc.Graph(
+						id='avg-consistency-month-bar',
+						style={'height':'40vh'},
+						figure={
+							'data': [
+								{
+									'name': "Consistency",
+									'x': list(processed_data['consistency_stats_month'].average().keys()),
+									'y': list(processed_data['consistency_stats_month'].average().values()),
+									'type': 'bar'
+								}
+							],
+							'layout': {
+								'title': 'Average Consistency vs. Month',
+								'xaxis': {
+									'title': 'Month',
+								},
+								'yaxis': {
+									'range':[1,4]
+								}
 							}
 						}
-					}
-				)
+					),
+					dcc.Graph(
+						id='avg-size-month-bar',
+						style={'height':'40vh'},
+						figure={
+							'data': [
+								{
+									'name': "Size",
+									'x': list(processed_data['size_stats_month'].average().keys()),
+									'y': list(processed_data['size_stats_month'].average().values()),
+									'type': 'bar'
+								}
+							],
+							'layout': {
+								'title': 'Average Size vs. Month',
+								'xaxis': {
+									'title': 'Month',
+								},
+								'yaxis': {
+									'range':[1,3]
+								}
+							}
+						}
+					)
+				])
 			])
 		]),
 	]
