@@ -69,80 +69,30 @@ def display_dash(processed_data):
 		navbar,
 
 		html.Div([
-			html.Label("Avg. Consistency: {:.3f}".format(processed_data["average_consistency"]), style=avg_count_style),
-			html.Label("Avg. Size: {:.3f}".format(processed_data["average_size"]), style=avg_count_style),
-			html.Label("Glück Count: {}".format(processed_data["cnt_type"]["glück"]), style=avg_count_style),
-			html.Label("Ninja Count: {}".format(processed_data["cnt_type"]["ninja"]), style=avg_count_style),
-			html.Label("Neocolor Count: {}".format(processed_data["cnt_type"]["neocolor"]), style=avg_count_style),
-			html.Label("Geiss Count: {}".format(processed_data["cnt_type"]["geiss"]), style=avg_count_style),
-			html.Label("Bier Count: {}".format(processed_data["cnt_type"]["bier"]), style=avg_count_style), 
-		],
-		style={'columnCount':2, 'backgroundColor':'#eeeeee'}
-		),
-
-		html.Div([
-			html.Div([
-				html.Label("Monday", style=weekday_style),
-				html.Label("Tuesday", style=weekday_style),
-				html.Label("Wednesday", style=weekday_style),
-			],
-			style={'columnCount':'1' ,'backgroundColor':'#dddddd', 'width': '50%', 'float':'left'}
-			),
-			html.Div([
-				dcc.Graph(
-					id='sittings-heatmap',
-					figure=dict(
-						data=[
-							dict(
-								x=list(range(1,32)),
-								y=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-								z=create_heatmap_matrix(processed_data['cnt_sittings_date']),
-								xgap=1,
-								ygap=1,
-								colorscale='Reds',
-								name='lksjdf',
-								type='heatmap'
-							)
-						],
-						layout=dict(
-							title='Sittings Heatmap',
-							yaxis=dict(
-								autorange='reversed'
-							)
+			dcc.Graph(
+				id='sittings-heatmap',
+				figure=dict(
+					data=[
+						dict(
+							x=list(range(1,32)),
+							y=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+							z=create_heatmap_matrix(processed_data['cnt_sittings_date']),
+							xgap=1,
+							ygap=1,
+							colorscale='Reds',
+							name='lksjdf',
+							type='heatmap'
+						)
+					],
+					layout=dict(
+						title='Sittings Heatmap',
+						yaxis=dict(
+							autorange='reversed'
 						)
 					)
 				)
-			],
-			style={'backgroundColor':'#bbbbbb', 'width': '50%', 'float':'right', 'height': '100%'}
-			)
-		],
-		style={'columnCount':1, 'backgroundColor':'#111111'}
-		),
-
-		html.Div([
-			daq.Gauge(
-				id='consistency-gauge',
-				label='Average Consistency',
-				min=1,
-				max=4,
-				showCurrentValue=True,
-				scale={'custom':{1:{'label':'d'}, 2:{'label':'w'}, 3:{'label':'n'}, 4:{'label':'h'}}},
-				value=processed_data["average_consistency"]
 			),
-			daq.Gauge(
-				id='size-gauge',
-				label='Average Size',
-				min=1,
-				max=3,
-				showCurrentValue=True,
-				scale={'custom':{1:{'label':'w'}, 2:{'label':'n'}, 3:{'label':'g'}}},
-				value=processed_data["average_size"],
-			)  
-		],
-		style={'columnCount':2, 'backgroundColor':'#ffffff'}
-		),
 
-		html.Div([
 			dcc.Graph(
 				id='consistency-heatmap',
 				figure=dict(
@@ -165,12 +115,8 @@ def display_dash(processed_data):
 						)
 					)
 				)
-			)
-		],
-		style={'backgroundColor':'#bbbbbb'}
-		),
+			),
 
-		html.Div([
 			dcc.Graph(
 				id='size-heatmap',
 				figure=dict(
@@ -194,11 +140,25 @@ def display_dash(processed_data):
 					)
 				)
 			)
-		],
-		style={'backgroundColor':'#bbbbbb'}
-		),
+		]),
 
-		
+		html.Div([
+			dbc.Table([
+				html.Thead(html.Tr([html.Th("Attribute"), html.Th("Count")])),
+				html.Tbody([
+					html.Tr([html.Td("Glück"), html.Td(processed_data["cnt_type"]["glück"])]),
+					html.Tr([html.Td("Ninja"), html.Td(processed_data["cnt_type"]["ninja"])]),
+					html.Tr([html.Td("Neocolor"), html.Td(processed_data["cnt_type"]["neocolor"])]),
+					html.Tr([html.Td("Geiss"), html.Td(processed_data["cnt_type"]["geiss"])]),
+					html.Tr([html.Td("Bier"), html.Td(processed_data["cnt_type"]["bier"])]),
+				])
+			],
+			hover=True,
+			striped=True,
+			responsive=True)
+		],
+		style={'margin-left': '5vw', 'margin-right': '5vw', 'margin-top': 10, 'height':'80vh', 'width':'90vw'}
+		)
 	]
 
 
