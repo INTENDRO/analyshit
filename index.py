@@ -79,7 +79,7 @@ def check_file_exists(filepath):
 
 def main():
 	global processed_data
-	logging.basicConfig(level=logging.DEBUG, datefmt="%H:%M:%S", format="[%(asctime)s] - %(levelname)s - %(funcName)s ||| %(message)s")
+	logging.basicConfig(level=logging.INFO, datefmt="%H:%M:%S", format="[%(asctime)s] - %(levelname)s - %(funcName)s ||| %(message)s")
 
 	args = parse_input_arguments()
 	home_dir = get_project_directory()
