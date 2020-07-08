@@ -11,8 +11,7 @@ Diagrams and Outputs:
 
 
 To Do:
-- Convert DATES constants list to generator (safe memory)
-- refactor TimeSpanList constructor
+- refactor TimeSpanList constructor (removing of the 'None' entries is ugly)
 """
 
 import dash_core_components as dcc
