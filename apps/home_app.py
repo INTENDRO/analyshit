@@ -69,6 +69,14 @@ def display_dash(processed_data):
 		navbar,
 
 		html.Div([
+			html.Div("Average Consistency: {:.2f}".format(processed_data['average_consistency']), style={'flex':'50%'}),
+			html.Div("Average Size: {:.2f}".format(processed_data['average_size']), style={'flex':'50%'})
+		],
+		style={'display':'flex','margin-left': '5vw', 'margin-right': '5vw', 'margin-top': 10,
+				'font-size':'3vw'
+		}),
+
+		html.Div([
 			dcc.Graph(
 				id='sittings-heatmap',
 				figure=dict(
