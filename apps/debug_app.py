@@ -22,10 +22,13 @@ def display_dash(processed_data):
 	return [
 		dcc.Location(id='url', refresh=False),
 		navbar,
-		html.Br(),
-		dcc.Textarea(
-			id="debug-information",
-			value="\n\n".join(map(lambda item: "{}:\n{}".format(item[0],item[1]),processed_data.items())),
-			style={'width': '100%', 'height': 800},
-		)
+		html.Div([
+			dcc.Textarea(
+				id="debug-information",
+				value="\n\n".join(map(lambda item: "{}:\n{}".format(item[0],item[1]),processed_data.items())),
+				style={'width': '100%', 'height':'100%'},
+			)
+		],
+		style={'margin-left': '5vw', 'margin-right': '5vw', 'margin-top': 10, 'height':'80vh', 'width':'90vw'})
+		
 	]
